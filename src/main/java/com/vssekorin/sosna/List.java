@@ -75,4 +75,39 @@ public sealed interface List<T>
     default T apply(final Integer integer) {
         return getOrNull(integer);
     }
+
+    static <T> List<T> empty() {
+        return List.nil();
+    }
+
+    static <T> List<T> of(final T elem) {
+        return new Cons<>(elem, List.nil());
+    }
+
+    @SafeVarargs
+    static <T> List<T> of(final T... elems) {
+        List<T> result = List.nil();
+        for (int i = elems.length - 1; i >= 0; i--) {
+            result = new Cons<>(elems[i], result);
+        }
+        return result;
+    }
+
+    static <T> List<T> ofAll(final Iterable<? extends T> elems) {
+        List<T> result = nil();
+        for (T elem : elems) {
+            result = new Cons<>(elem, result);
+        }
+        return result.reverse();
+    }
+
+    default List<T> reverse() {
+        List<T> origin = this;
+        List<T> result = nil();
+        while (origin.isNonEmpty()) {
+            result = new Cons<>(origin.head(), result);
+            origin = origin.tail();
+        }
+        return result;
+    }
 }

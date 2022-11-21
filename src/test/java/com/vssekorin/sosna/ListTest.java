@@ -2,6 +2,8 @@ package com.vssekorin.sosna;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static com.vssekorin.sosna.List.nil;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -124,5 +126,38 @@ class ListTest {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
         assertNull(list.apply(-1));
         assertNull(list.apply(3));
+    }
+
+    @Test
+    void testEmpty() {
+        List<Integer> list = List.empty();
+        assertTrue(list.isEmpty());
+    }
+
+    @Test
+    void testOfSingleElement() {
+        List<Integer> list = List.of(6);
+        assertTrue(list.isNonEmpty());
+        assertArrayEquals(new Integer[]{6}, list.asJava().toArray());
+    }
+
+    @Test
+    void testOfElements() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertTrue(list.isNonEmpty());
+        assertArrayEquals(new Integer[]{1, 2, 3}, list.asJava().toArray());
+    }
+
+    @Test
+    void testOfAll() {
+        List<Integer> list = List.ofAll(Arrays.asList(1, 2, 3));
+        assertTrue(list.isNonEmpty());
+        assertArrayEquals(new Integer[]{1, 2, 3}, list.asJava().toArray());
+    }
+
+    @Test
+    void reverse() {
+        List<Integer> list = List.of(1, 2, 3).reverse();
+        assertArrayEquals(new Integer[]{3, 2, 1}, list.asJava().toArray());
     }
 }
