@@ -3,6 +3,7 @@ package com.vssekorin.sosna;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import static com.vssekorin.sosna.List.nil;
 import static org.junit.jupiter.api.Assertions.*;
@@ -156,8 +157,32 @@ class ListTest {
     }
 
     @Test
-    void reverse() {
+    void testReverse() {
         List<Integer> list = List.of(1, 2, 3).reverse();
         assertArrayEquals(new Integer[]{3, 2, 1}, list.asJava().toArray());
+    }
+
+    @Test
+    void testLastCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertEquals(3, list.last());
+    }
+
+    @Test
+    void testLastNil() {
+        assertThrows(NoSuchElementException.class, () -> nil().last());
+    }
+
+    @Test
+    void testInsertCons() {
+        List<Integer> list = List.of(1, 2, 3).insert(2, 6);
+        assertArrayEquals(new Integer[]{1, 2, 6, 3}, list.asJava().toArray());
+    }
+
+    @Test
+    void testInsertNil() {
+        List<Integer> list = List.<Integer>nil().insert(2, 6);
+        assertFalse(list.isNil());
+        assertArrayEquals(new Integer[]{6}, list.asJava().toArray());
     }
 }

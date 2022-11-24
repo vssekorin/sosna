@@ -110,4 +110,8 @@ public sealed interface List<T>
         }
         return result;
     }
+
+    T last();
+
+    List<T> insert(final int pos, final T elem);
 }

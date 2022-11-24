@@ -44,4 +44,14 @@ public final class Nil<T> implements List<T> {
     public boolean contains(final T elem) {
         return false;
     }
+
+    @Override
+    public T last() {
+        throw new NoSuchElementException("last() of empty list");
+    }
+
+    @Override
+    public List<T> insert(int pos, T elem) {
+        return new Cons<>(elem, List.nil());
+    }
 }

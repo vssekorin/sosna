@@ -41,4 +41,16 @@ public final class Cons<T> implements List<T> {
     public boolean contains(final T elem) {
         return elem.equals(head) || tail.contains(elem);
     }
+
+    @Override
+    public T last() {
+        return tail.isNil() ? head : tail.last();
+    }
+
+    @Override
+    public List<T> insert(int pos, T elem) {
+        return pos == 0
+            ? new Cons<>(elem, this)
+            : new Cons<>(head, tail.insert(pos - 1, elem));
+    }
 }

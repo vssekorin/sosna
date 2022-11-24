@@ -37,6 +37,8 @@ cmake-build-*/
 out/
 build/
 
+.gradle/
+
 # JIRA plugin
 atlassian-ide-plugin.xml
 
