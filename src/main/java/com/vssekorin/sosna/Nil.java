@@ -46,12 +46,27 @@ public final class Nil<T> implements List<T> {
     }
 
     @Override
+    public T getOrNull(final int n) {
+        return null;
+    }
+
+    @Override
+    public T get(int n) {
+        throw new IllegalArgumentException("get(): n is more than length");
+    }
+
+    @Override
     public T last() {
         throw new NoSuchElementException("last() of empty list");
     }
 
     @Override
-    public List<T> insert(int pos, T elem) {
+    public List<T> insert(final int pos, final T elem) {
         return new Cons<>(elem, List.nil());
+    }
+
+    @Override
+    public List<T> with(int pos, T value) {
+        throw new IllegalArgumentException("with(): position is more than length");
     }
 }

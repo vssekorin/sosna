@@ -108,6 +108,21 @@ class ListTest {
     }
 
     @Test
+    void testGetReturnElementIfIndexIsCorrect() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertEquals(1, list.get(0));
+        assertEquals(2, list.get(1));
+        assertEquals(3, list.get(2));
+    }
+
+    @Test
+    void testGetThrowExceptionIfIndexIsNotCorrect() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertThrows(IllegalArgumentException.class, () -> list.get(-1));
+        assertThrows(IllegalArgumentException.class, () -> list.get(3));
+    }
+
+    @Test
     void testStream() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
         assertEquals(3, list.stream().count());
@@ -184,5 +199,17 @@ class ListTest {
         List<Integer> list = List.<Integer>nil().insert(2, 6);
         assertFalse(list.isNil());
         assertArrayEquals(new Integer[]{6}, list.asJava().toArray());
+    }
+
+    @Test
+    void testWith() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5).with(2, 10);
+        assertArrayEquals(new Integer[]{1, 2, 10, 4, 5}, list.asJava().toArray());
+    }
+
+    @Test
+    void testWithWithException() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertThrows(IllegalArgumentException.class, () -> list.with(20, 10));
     }
 }

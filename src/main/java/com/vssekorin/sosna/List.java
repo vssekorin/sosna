@@ -35,14 +35,9 @@ public sealed interface List<T>
 
     boolean contains(final T elem);
 
-    default T getOrNull(int n) {
-        if (n < 0) return null;
-        List<T> list = this;
-        for (int i = 0; i < n && list.isNonEmpty(); i++) {
-            list = list.tail();
-        }
-        return list.isNil() ? null : list.head();
-    }
+    T getOrNull(int n);
+
+    T get(int n);
 
     @Override
     default Iterator<T> iterator() {
@@ -114,4 +109,6 @@ public sealed interface List<T>
     T last();
 
     List<T> insert(final int pos, final T elem);
+
+    List<T> with(final int pos, final T value);
 }
