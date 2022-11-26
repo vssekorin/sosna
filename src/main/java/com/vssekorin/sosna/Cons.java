@@ -1,5 +1,9 @@
 package com.vssekorin.sosna;
 
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
 public final class Cons<T> implements List<T> {
 
     private final T head;
@@ -48,8 +52,18 @@ public final class Cons<T> implements List<T> {
     }
 
     @Override
-    public T get(int n) {
+    public T get(final int n) {
         return n == 0 ? head : tail.get(n - 1);
+    }
+
+    @Override
+    public List<T> or(final Iterable<? extends T> other) {
+        return this;
+    }
+
+    @Override
+    public List<T> or(final Supplier<? extends Iterable<? extends T>> supplier) {
+        return this;
     }
 
     @Override
@@ -69,5 +83,15 @@ public final class Cons<T> implements List<T> {
         return pos == 0
             ? new Cons<>(value, tail)
             : new Cons<>(head, tail.with(pos - 1, value));
+    }
+
+    @Override
+    public <U> List<U> map(final Function<T, ? extends U> mapper) {
+        return new Cons<>(mapper.apply(head), tail.map(mapper));
+    }
+
+    @Override
+    public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
+        return ifCons.apply(head, tail);
     }
 }

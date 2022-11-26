@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
 import static org.junit.jupiter.api.Assertions.*;
@@ -211,5 +212,67 @@ class ListTest {
     void testWithWithException() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
         assertThrows(IllegalArgumentException.class, () -> list.with(20, 10));
+    }
+
+    @Test
+    void testOrIfEmpty() {
+        List<Integer> list = List.nil();
+        List<Integer> other = List.of(4, 5, 6);
+        assertArrayEquals(new Integer[]{4, 5, 6}, list.or(other).asJava().toArray());
+        assertEquals(other, list.or(other));
+    }
+
+    @Test
+    void testOrJavaListIfEmpty() {
+        List<Integer> list = List.nil();
+        java.util.List<Integer> other = Arrays.asList(4, 5, 6);
+        assertArrayEquals(new Integer[]{4, 5, 6}, list.or(other).asJava().toArray());
+    }
+
+    @Test
+    void testOrIfNotEmpty() {
+        List<Integer> list = List.of(1, 2, 3);
+        List<Integer> other = List.of(4, 5, 6);
+        assertArrayEquals(new Integer[]{1, 2, 3}, list.or(other).asJava().toArray());
+        assertEquals(list, list.or(other));
+    }
+
+    @Test
+    void testOrSupplierIfEmpty() {
+        List<Integer> list = List.nil();
+        Supplier<List<Integer>> other = () -> List.of(4, 5, 6);
+        assertArrayEquals(new Integer[]{4, 5, 6}, list.or(other).asJava().toArray());
+    }
+
+    @Test
+    void testOrSupplierJavaListIfEmpty() {
+        List<Integer> list = List.nil();
+        Supplier<java.util.List<Integer>> other = () -> Arrays.asList(4, 5, 6);
+        assertArrayEquals(new Integer[]{4, 5, 6}, list.or(other).asJava().toArray());
+    }
+
+    @Test
+    void testOrSupplierIfNotEmpty() {
+        List<Integer> list = List.of(1, 2, 3);
+        Supplier<List<Integer>> other = () -> List.of(4, 5, 6);
+        assertArrayEquals(new Integer[]{1, 2, 3}, list.or(other).asJava().toArray());
+    }
+
+    @Test
+    void testMap() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertArrayEquals(new Integer[]{11, 12, 13}, list.map(v -> v + 10).asJava().toArray());
+    }
+
+    @Test
+    void testMatchNil() {
+        List<Integer> list = nil();
+        assertEquals(1, list.match(() -> 1, (h, t) -> 2));
+    }
+
+    @Test
+    void testMatchCons() {
+        List<Integer> list = List.of(11, 12, 13);
+        assertEquals(2, list.match(() -> 1, (h, t) -> 2));
     }
 }

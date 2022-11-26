@@ -3,7 +3,9 @@ package com.vssekorin.sosna;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -35,9 +37,9 @@ public sealed interface List<T>
 
     boolean contains(final T elem);
 
-    T getOrNull(int n);
+    T getOrNull(final int n);
 
-    T get(int n);
+    T get(final int n);
 
     @Override
     default Iterator<T> iterator() {
@@ -96,6 +98,10 @@ public sealed interface List<T>
         return result.reverse();
     }
 
+    List<T> or(final Iterable<? extends T> other);
+
+    List<T> or(final Supplier<? extends Iterable<? extends T>> supplier);
+
     default List<T> reverse() {
         List<T> origin = this;
         List<T> result = nil();
@@ -111,4 +117,8 @@ public sealed interface List<T>
     List<T> insert(final int pos, final T elem);
 
     List<T> with(final int pos, final T value);
+
+    <U> List<U> map(final Function<T, ? extends U> mapper);
+
+    <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons);
 }

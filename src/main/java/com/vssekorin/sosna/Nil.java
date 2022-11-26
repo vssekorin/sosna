@@ -2,6 +2,9 @@ package com.vssekorin.sosna;
 
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 public final class Nil<T> implements List<T> {
 
@@ -56,6 +59,19 @@ public final class Nil<T> implements List<T> {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
+    public List<T> or(final Iterable<? extends T> other) {
+        return other instanceof List ? (List<T>) other : List.ofAll(other);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<T> or(Supplier<? extends Iterable<? extends T>> supplier) {
+        final Iterable<? extends T> other = supplier.get();
+        return other instanceof List ? (List<T>) other : List.ofAll(other);
+    }
+
+    @Override
     public T last() {
         throw new NoSuchElementException("last() of empty list");
     }
@@ -68,5 +84,15 @@ public final class Nil<T> implements List<T> {
     @Override
     public List<T> with(int pos, T value) {
         throw new IllegalArgumentException("with(): position is more than length");
+    }
+
+    @Override
+    public <U> List<U> map(final Function<T, ? extends U> mapper) {
+        return instance();
+    }
+
+    @Override
+    public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
+        return ifNil.get();
     }
 }
