@@ -272,7 +272,68 @@ class ListTest {
 
     @Test
     void testMatchCons() {
-        List<Integer> list = List.of(11, 12, 13);
+        List<Integer> list = List.of(1, 2, 3);
         assertEquals(2, list.match(() -> 1, (h, t) -> 2));
+    }
+
+    @Test
+    void testConsPlusCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        List<Integer> other = List.of(4, 5, 6);
+        assertListEquals(List.of(1, 2, 3, 4, 5, 6), list.plus(other));
+    }
+
+    @Test
+    void testNilPlusCons() {
+        List<Integer> list = List.nil();
+        List<Integer> other = List.of(4, 5, 6);
+        assertListEquals(List.of(4, 5, 6), list.plus(other));
+    }
+
+    @Test
+    void testConsPlusNil() {
+        List<Integer> list = List.of(1, 2, 3);
+        List<Integer> other = List.nil();
+        assertListEquals(List.of(1, 2, 3), list.plus(other));
+    }
+
+    @Test
+    void testNilPlusNil() {
+        List<Integer> list = List.nil();
+        List<Integer> other = List.nil();
+        assertListEquals(List.nil(), list.plus(other));
+    }
+
+    @Test
+    void testInsertPredNil() {
+        int value = 6;
+        List<Integer> list = List.nil();
+        assertListEquals(List.of(value), list.insert(a -> true, value));
+        assertListEquals(List.of(value), list.insert(a -> false, value));
+    }
+
+    @Test
+    void testInsertPredCons() {
+        int value = 10;
+        List<Integer> list = List.of(1, 3, 2, 4);
+        assertListEquals(List.of(1, 3, value, 2, 4), list.insert(a -> a % 2 == 0, value));
+    }
+
+    @Test
+    void testInsertPredFirst() {
+        int value = 10;
+        List<Integer> list = List.of(1, 3, 2, 4);
+        assertListEquals(List.of(value, 1, 3, 2, 4), list.insert(a -> a > 0, value));
+    }
+
+    @Test
+    void testInsertPredLast() {
+        int value = 10;
+        List<Integer> list = List.of(1, 3, 2, 4);
+        assertListEquals(List.of(1, 3, 2, 4, value), list.insert(a -> a < 0, value));
+    }
+
+    private static <T> void assertListEquals(List<T> expected, List<T> actual) {
+        assertArrayEquals(expected.asJava().toArray(), actual.asJava().toArray());
     }
 }

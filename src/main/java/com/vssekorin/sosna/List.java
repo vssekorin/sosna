@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -116,9 +117,13 @@ public sealed interface List<T>
 
     List<T> insert(final int pos, final T elem);
 
+    List<T> insert(final Predicate<T> pred, final T value);
+
     List<T> with(final int pos, final T value);
 
     <U> List<U> map(final Function<T, ? extends U> mapper);
 
     <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons);
+
+    List<T> plus(final List<T> other);
 }

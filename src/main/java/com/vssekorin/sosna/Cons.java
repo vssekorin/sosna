@@ -2,6 +2,7 @@ package com.vssekorin.sosna;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class Cons<T> implements List<T> {
@@ -79,6 +80,13 @@ public final class Cons<T> implements List<T> {
     }
 
     @Override
+    public List<T> insert(final Predicate<T> pred, final T value) {
+        return pred.test(head)
+            ? new Cons<>(value, this)
+            : new Cons<>(head, tail.insert(pred, value));
+    }
+
+    @Override
     public List<T> with(int pos, T value) {
         return pos == 0
             ? new Cons<>(value, tail)
@@ -93,5 +101,10 @@ public final class Cons<T> implements List<T> {
     @Override
     public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
         return ifCons.apply(head, tail);
+    }
+
+    @Override
+    public List<T> plus(final List<T> other) {
+        return new Cons<>(head, tail.plus(other));
     }
 }

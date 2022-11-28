@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 public final class Nil<T> implements List<T> {
@@ -82,6 +83,11 @@ public final class Nil<T> implements List<T> {
     }
 
     @Override
+    public List<T> insert(final Predicate<T> pred, final T value) {
+        return new Cons<>(value, List.nil());
+    }
+
+    @Override
     public List<T> with(int pos, T value) {
         throw new IllegalArgumentException("with(): position is more than length");
     }
@@ -94,5 +100,10 @@ public final class Nil<T> implements List<T> {
     @Override
     public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
         return ifNil.get();
+    }
+
+    @Override
+    public List<T> plus(final List<T> other) {
+        return other;
     }
 }
