@@ -3,10 +3,7 @@ package com.vssekorin.sosna;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.Predicate;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -38,9 +35,13 @@ public sealed interface List<T>
 
     boolean contains(final T elem);
 
+    T get(final int n);
+
     T getOrNull(final int n);
 
-    T get(final int n);
+    T getOr(final int n, final T defaultValue);
+
+    T getOr(final int n, final Supplier<T> defaultValue);
 
     @Override
     default Iterator<T> iterator() {
@@ -124,6 +125,12 @@ public sealed interface List<T>
     <U> List<U> map(final Function<T, ? extends U> mapper);
 
     <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons);
+
+    <U> U match(
+        final Supplier<? extends U> ifNil,
+        final Function<T, ? extends U> ifSingle,
+        final Function<T, Function<T, Function<List<T>, ? extends U>>> ifMultiple
+    );
 
     List<T> plus(final List<T> other);
 }

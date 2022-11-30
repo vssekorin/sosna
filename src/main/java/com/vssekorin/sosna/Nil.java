@@ -55,6 +55,16 @@ public final class Nil<T> implements List<T> {
     }
 
     @Override
+    public T getOr(final int n, final T defaultValue) {
+        return defaultValue;
+    }
+
+    @Override
+    public T getOr(final int n, final Supplier<T> defaultValue) {
+        return defaultValue.get();
+    }
+
+    @Override
     public T get(int n) {
         throw new IllegalArgumentException("get(): n is more than length");
     }
@@ -99,6 +109,15 @@ public final class Nil<T> implements List<T> {
 
     @Override
     public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
+        return ifNil.get();
+    }
+
+    @Override
+    public <U> U match(
+        final Supplier<? extends U> ifNil,
+        final Function<T, ? extends U> ifSingle,
+        final Function<T, Function<T, Function<List<T>, ? extends U>>> ifMultiple
+    ) {
         return ifNil.get();
     }
 

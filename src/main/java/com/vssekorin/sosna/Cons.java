@@ -53,6 +53,16 @@ public final class Cons<T> implements List<T> {
     }
 
     @Override
+    public T getOr(final int n, final T defaultValue) {
+        return n == 0 ? head : tail.getOr(n - 1, defaultValue);
+    }
+
+    @Override
+    public T getOr(final int n, final Supplier<T> defaultValue) {
+        return n == 0 ? head : tail.getOr(n - 1, defaultValue);
+    }
+
+    @Override
     public T get(final int n) {
         return n == 0 ? head : tail.get(n - 1);
     }
@@ -101,6 +111,19 @@ public final class Cons<T> implements List<T> {
     @Override
     public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
         return ifCons.apply(head, tail);
+    }
+
+    @Override
+    public <U> U match(
+        final Supplier<? extends U> ifNil,
+        final Function<T, ? extends U> ifSingle,
+        final Function<T, Function<T, Function<List<T>, ? extends U>>> ifMultiple
+    ) {
+        if (tail.isEmpty()) {
+            return ifSingle.apply(head);
+        } else {
+            return ifMultiple.apply(head).apply(tail.head()).apply(tail.tail());
+        }
     }
 
     @Override

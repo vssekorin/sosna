@@ -7,6 +7,7 @@ import java.util.NoSuchElementException;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
+import static com.vssekorin.sosna.ListTestUtil.assertListEquals;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ListTest {
@@ -121,6 +122,36 @@ class ListTest {
         List<Integer> list = List.of(1, 2, 3);
         assertThrows(IllegalArgumentException.class, () -> list.get(-1));
         assertThrows(IllegalArgumentException.class, () -> list.get(3));
+    }
+
+    @Test
+    void testGetOrReturnElementIfIndexIsCorrect() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertEquals(1, list.getOr(0, -1));
+        assertEquals(2, list.getOr(1, -1));
+        assertEquals(3, list.getOr(2, -1));
+    }
+
+    @Test
+    void testGetOrReturnDefaultIfIndexIsNotCorrect() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertEquals(-1, list.getOr(-1, -1));
+        assertEquals(-1, list.getOr(3, -1));
+    }
+
+    @Test
+    void testGetOrSupplierReturnElementIfIndexIsCorrect() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertEquals(1, list.getOr(0, () -> -1));
+        assertEquals(2, list.getOr(1, () -> -1));
+        assertEquals(3, list.getOr(2, () -> -1));
+    }
+
+    @Test
+    void testGetOrSupplierReturnDefaultIfIndexIsNotCorrect() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertEquals(-1, list.getOr(-1, () -> -1));
+        assertEquals(-1, list.getOr(3, () -> -1));
     }
 
     @Test
@@ -333,7 +364,24 @@ class ListTest {
         assertListEquals(List.of(1, 3, 2, 4, value), list.insert(a -> a < 0, value));
     }
 
-    private static <T> void assertListEquals(List<T> expected, List<T> actual) {
-        assertArrayEquals(expected.asJava().toArray(), actual.asJava().toArray());
+    @Test
+    void testMatch2Nil() {
+        List<Integer> list = nil();
+        String result = list.match(() -> "1", h -> "2", h1 -> h2 -> xs -> "3");
+        assertEquals("1", result);
+    }
+
+    @Test
+    void testMatch2OneCons() {
+        List<Integer> list = List.of(6);
+        String result = list.match(() -> "1", h -> "2", h1 -> h2 -> xs -> "3");
+        assertEquals("2", result);
+    }
+
+    @Test
+    void testMatch2MoreThanOneCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        String result = list.match(() -> "1", h -> "2", h1 -> h2 -> xs -> "3");
+        assertEquals("3", result);
     }
 }
