@@ -47,13 +47,13 @@ class ListTest {
 
     @Test
     void testNilLengthIsZero() {
-        assertEquals(0, nil().length());
+        assertEquals(0, nil().size());
     }
 
     @Test
-    void testConsLength() {
-        assertEquals(1, new Cons<>(1, nil()).length());
-        assertEquals(2, new Cons<>(1, new Cons<>(2, nil())).length());
+    void testConssize() {
+        assertEquals(1, new Cons<>(1, nil()).size());
+        assertEquals(2, new Cons<>(1, new Cons<>(2, nil())).size());
     }
 
     @Test
@@ -66,8 +66,8 @@ class ListTest {
     void testTail() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
         List<Integer> tail = list.tail();
-        assertEquals(2, tail.length());
-        assertEquals(list.length() - 1, tail.length());
+        assertEquals(2, tail.size());
+        assertEquals(list.size() - 1, tail.size());
         assertEquals(2, tail.head());
     }
 
@@ -95,6 +95,24 @@ class ListTest {
     }
 
     @Test
+    void testGetFirst() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(1, list.get(0));
+    }
+
+    @Test
+    void testGetLast() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(5, list.get(4));
+    }
+
+    @Test
+    void testGetPenultimate() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(4, list.get(3));
+    }
+
+    @Test
     void testGetOrNullReturnElementIfIndexIsCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
         assertEquals(1, list.getOrNull(0));
@@ -105,7 +123,7 @@ class ListTest {
     @Test
     void testGetOrNullReturnNullIfIndexIsNotCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
-        assertNull(list.getOrNull(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.getOrNull(-1));
         assertNull(list.getOrNull(3));
     }
 
@@ -120,8 +138,8 @@ class ListTest {
     @Test
     void testGetThrowExceptionIfIndexIsNotCorrect() {
         List<Integer> list = List.of(1, 2, 3);
-        assertThrows(IllegalArgumentException.class, () -> list.get(-1));
-        assertThrows(IllegalArgumentException.class, () -> list.get(3));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.get(3));
     }
 
     @Test
@@ -135,7 +153,7 @@ class ListTest {
     @Test
     void testGetOrReturnDefaultIfIndexIsNotCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
-        assertEquals(-1, list.getOr(-1, -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.getOr(-1, -1));
         assertEquals(-1, list.getOr(3, -1));
     }
 
@@ -150,7 +168,7 @@ class ListTest {
     @Test
     void testGetOrSupplierReturnDefaultIfIndexIsNotCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
-        assertEquals(-1, list.getOr(-1, () -> -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.getOr(-1, () -> -1));
         assertEquals(-1, list.getOr(3, () -> -1));
     }
 
@@ -172,7 +190,7 @@ class ListTest {
     @Test
     void testApplyReturnNullIfIndexIsNotCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
-        assertNull(list.apply(-1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.apply(-1));
         assertNull(list.apply(3));
     }
 
@@ -227,10 +245,27 @@ class ListTest {
     }
 
     @Test
+    void testInsertConsFirst() {
+        List<Integer> list = List.of(1, 2, 3).insert(0, 6);
+        assertArrayEquals(new Integer[]{6, 1, 2, 3}, list.asJava().toArray());
+    }
+
+    @Test
+    void testInsertConsLast() {
+        List<Integer> list = List.of(1, 2, 3).insert(3, 6);
+        assertArrayEquals(new Integer[]{1, 2, 3, 6}, list.asJava().toArray());
+    }
+
+    @Test
+    void testInsertConsPenultimate() {
+        List<Integer> list = List.of(1, 2, 3).insert(2, 6);
+        assertArrayEquals(new Integer[]{1, 2, 6, 3}, list.asJava().toArray());
+    }
+
+    @Test
     void testInsertNil() {
-        List<Integer> list = List.<Integer>nil().insert(2, 6);
-        assertFalse(list.isNil());
-        assertArrayEquals(new Integer[]{6}, list.asJava().toArray());
+        List<Integer> list = List.nil();
+        assertThrows(IndexOutOfBoundsException.class, () -> list.insert(2, 6));
     }
 
     @Test
@@ -240,9 +275,27 @@ class ListTest {
     }
 
     @Test
+    void testWithFirst() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5).with(0, 10);
+        assertArrayEquals(new Integer[]{10, 2, 3, 4, 5}, list.asJava().toArray());
+    }
+
+    @Test
+    void testWithLast() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5).with(4, 10);
+        assertArrayEquals(new Integer[]{1, 2, 3, 4, 10}, list.asJava().toArray());
+    }
+
+    @Test
+    void testWithNil() {
+        List<Integer> list = List.<Integer>nil();
+        assertThrows(IndexOutOfBoundsException.class, () -> list.with(20, 10));
+    }
+
+    @Test
     void testWithWithException() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertThrows(IllegalArgumentException.class, () -> list.with(20, 10));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.with(20, 10));
     }
 
     @Test
@@ -336,35 +389,6 @@ class ListTest {
     }
 
     @Test
-    void testInsertPredNil() {
-        int value = 6;
-        List<Integer> list = List.nil();
-        assertListEquals(List.of(value), list.insert(a -> true, value));
-        assertListEquals(List.of(value), list.insert(a -> false, value));
-    }
-
-    @Test
-    void testInsertPredCons() {
-        int value = 10;
-        List<Integer> list = List.of(1, 3, 2, 4);
-        assertListEquals(List.of(1, 3, value, 2, 4), list.insert(a -> a % 2 == 0, value));
-    }
-
-    @Test
-    void testInsertPredFirst() {
-        int value = 10;
-        List<Integer> list = List.of(1, 3, 2, 4);
-        assertListEquals(List.of(value, 1, 3, 2, 4), list.insert(a -> a > 0, value));
-    }
-
-    @Test
-    void testInsertPredLast() {
-        int value = 10;
-        List<Integer> list = List.of(1, 3, 2, 4);
-        assertListEquals(List.of(1, 3, 2, 4, value), list.insert(a -> a < 0, value));
-    }
-
-    @Test
     void testMatch2Nil() {
         List<Integer> list = nil();
         String result = list.match(() -> "1", h -> "2", h1 -> h2 -> xs -> "3");
@@ -383,5 +407,39 @@ class ListTest {
         List<Integer> list = List.of(1, 2, 3);
         String result = list.match(() -> "1", h -> "2", h1 -> h2 -> xs -> "3");
         assertEquals("3", result);
+    }
+
+    @Test
+    void avoidStackOverflowError() {
+        final int size = 1_000_000;
+        List<Integer> list = List.nil();
+        for (int i = 0; i < size; i++) {
+            list = new Cons<>(i, list);
+        }
+        assertEquals(size, list.size());
+    }
+
+    @Test
+    void testAppendNil() {
+        List<Integer> list = List.nil();
+        assertListEquals(List.of(6), list.append(6));
+    }
+
+    @Test
+    void testAppendCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(List.of(1, 2, 3, 6), list.append(6));
+    }
+
+    @Test
+    void testPrependNil() {
+        List<Integer> list = List.nil();
+        assertListEquals(List.of(6), list.prepend(6));
+    }
+
+    @Test
+    void testPrependCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(List.of(6, 1, 2, 3), list.prepend(6));
     }
 }

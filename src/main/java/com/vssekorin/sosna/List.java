@@ -1,8 +1,10 @@
 package com.vssekorin.sosna;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
@@ -25,23 +27,86 @@ public sealed interface List<T>
         return !isEmpty();
     }
 
-    int length();
+    default int size() {
+        int size = 0;
+        for (List<T> cur = this; cur.isNonEmpty(); cur = cur.tail()) {
+            size++;
+        }
+        return size;
+    }
 
     T head();
 
     List<T> tail();
 
-    java.util.List<T> asJava();
+    default List<T> prepend(T value) {
+        return new Cons<>(value, this);
+    }
 
-    boolean contains(final T elem);
+    List<T> append(T value);
 
-    T get(final int n);
+    default java.util.List<T> asJava() {
+        final java.util.List<T> javaList = new ArrayList<>();
+        for (List<T> cur = this; cur.isNonEmpty(); cur = cur.tail()) {
+            javaList.add(cur.head());
+        }
+        return javaList;
+    }
 
-    T getOrNull(final int n);
+    default boolean contains(T value) {
+        for (List<T> cur = this; cur.isNonEmpty(); cur = cur.tail()) {
+            if (Objects.equals(cur.head(), value)) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-    T getOr(final int n, final T defaultValue);
+    default T get(int n) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                throw new IndexOutOfBoundsException("get(): n is more than length");
+            }
+        }
+        return cur.head();
+    }
 
-    T getOr(final int n, final Supplier<T> defaultValue);
+    default T getOrNull(int n) {
+        return getOr(n, () -> null);
+    }
+
+    default T getOr(int n, T defaultValue) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                return defaultValue;
+            }
+        }
+        return cur.head();
+    }
+
+    default T getOr(int n, Supplier<T> defaultValue) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                return defaultValue.get();
+            }
+        }
+        return cur.head();
+    }
 
     @Override
     default Iterator<T> iterator() {
@@ -114,15 +179,55 @@ public sealed interface List<T>
         return result;
     }
 
-    T last();
+    default T last() {
+        List<T> cur = this;
+        while (cur.tail().isNonEmpty()) {
+            cur = cur.tail();
+        }
+        return cur.head();
+    }
 
-    List<T> insert(final int pos, final T elem);
+    default List<T> insert(final int pos, final T value) {
+        List<T> result;
+        List<T> prefix = nil();
+        List<T> cur = this;
+        for (int i = 0; i < pos; i++, cur = cur.tail()) {
+            if (cur.isNil()) {
+                throw new IndexOutOfBoundsException("insert() with pos = " + pos);
+            }
+            prefix = new Cons<>(cur.head(), prefix);
+        }
+        result = new Cons<>(value, cur);
+        for (List<T> p = prefix; p.isNonEmpty(); p = p.tail()) {
+            result = new Cons<>(p.head(), result);
+        }
+        return result;
+    }
 
-    List<T> insert(final Predicate<T> pred, final T value);
+    default List<T> with(final int pos, final T value) {
+        List<T> result;
+        List<T> prefix = nil();
+        List<T> cur = this;
+        for (int i = 0; i < pos; i++, cur = cur.tail()) {
+            if (cur.isNil()) {
+                throw new IndexOutOfBoundsException("with() with pos = " + pos);
+            }
+            prefix = new Cons<>(cur.head(), prefix);
+        }
+        result = new Cons<>(value, cur.tail());
+        for (List<T> p = prefix; p.isNonEmpty(); p = p.tail()) {
+            result = new Cons<>(p.head(), result);
+        }
+        return result;
+    }
 
-    List<T> with(final int pos, final T value);
-
-    <U> List<U> map(final Function<T, ? extends U> mapper);
+    default <U> List<U> map(final Function<T, ? extends U> mapper) {
+        List<U> result = nil();
+        for (List<T> cur = reverse(); cur.isNonEmpty(); cur = cur.tail()) {
+            result = new Cons<>(mapper.apply(cur.head()), result);
+        }
+        return result;
+    }
 
     <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons);
 
@@ -132,5 +237,11 @@ public sealed interface List<T>
         final Function<T, Function<T, Function<List<T>, ? extends U>>> ifMultiple
     );
 
-    List<T> plus(final List<T> other);
+    default List<T> plus(final List<T> other) {
+        List<T> result = other;
+        for (List<T> cur = reverse(); cur.isNonEmpty(); cur = cur.tail()) {
+            result = new Cons<>(cur.head(), result);
+        }
+        return result;
+    }
 }
