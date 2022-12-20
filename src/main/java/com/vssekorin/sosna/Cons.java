@@ -4,7 +4,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class Cons<T> implements List<T> {
+public final class Cons<T> extends List<T> {
 
     private final T head;
     private final List<T> tail;
@@ -32,32 +32,77 @@ public final class Cons<T> implements List<T> {
     @Override
     public List<T> append(T value) {
         List<T> list = new Cons<>(value, List.nil());
-        for (List<T> cur = reverse(); cur.isNonEmpty(); cur = cur.tail()) {
+        for (List<T> cur = reverse(); cur.nonEmpty(); cur = cur.tail()) {
             list = new Cons<>(cur.head(), list);
         }
         return list;
     }
 
     @Override
-    public List<T> or(final Iterable<? extends T> other) {
+    public T get(int n) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                throw new IndexOutOfBoundsException("get(): n is more than length");
+            }
+        }
+        return cur.head();
+    }
+
+    @Override
+    public T getOr(int n, T defaultValue) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                return defaultValue;
+            }
+        }
+        return cur.head();
+    }
+
+    @Override
+    public T getOrGet(int n, Supplier<T> defaultValue) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                return defaultValue.get();
+            }
+        }
+        return cur.head();
+    }
+
+    @Override
+    public List<T> or(Iterable<? extends T> other) {
         return this;
     }
 
     @Override
-    public List<T> or(final Supplier<? extends Iterable<? extends T>> supplier) {
+    public List<T> or(Supplier<? extends Iterable<? extends T>> supplier) {
         return this;
     }
 
     @Override
-    public <U> U match(final Supplier<? extends U> ifNil, final BiFunction<T, List<T>, ? extends U> ifCons) {
+    public <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons) {
         return ifCons.apply(head, tail);
     }
 
     @Override
     public <U> U match(
-        final Supplier<? extends U> ifNil,
-        final Function<T, ? extends U> ifSingle,
-        final Function<T, Function<T, Function<List<T>, ? extends U>>> ifMultiple
+        Supplier<? extends U> ifNil,
+        Function<T, ? extends U> ifSingle,
+        Function<T, Function<T, Function<Seq<T>, ? extends U>>> ifMultiple
     ) {
         if (tail.isEmpty()) {
             return ifSingle.apply(head);

@@ -36,13 +36,13 @@ class ListTest {
 
     @Test
     void testNilIsNotNonEmpty() {
-        assertFalse(nil().isNonEmpty());
+        assertFalse(nil().nonEmpty());
     }
 
     @Test
     void testConsIsNonEmpty() {
         List<Integer> list = new Cons<>(1, nil());
-        assertTrue(list.isNonEmpty());
+        assertTrue(list.nonEmpty());
     }
 
     @Test
@@ -160,16 +160,16 @@ class ListTest {
     @Test
     void testGetOrSupplierReturnElementIfIndexIsCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
-        assertEquals(1, list.getOr(0, () -> -1));
-        assertEquals(2, list.getOr(1, () -> -1));
-        assertEquals(3, list.getOr(2, () -> -1));
+        assertEquals(1, list.getOrGet(0, () -> -1));
+        assertEquals(2, list.getOrGet(1, () -> -1));
+        assertEquals(3, list.getOrGet(2, () -> -1));
     }
 
     @Test
     void testGetOrSupplierReturnDefaultIfIndexIsNotCorrect() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
-        assertThrows(IndexOutOfBoundsException.class, () -> list.getOr(-1, () -> -1));
-        assertEquals(-1, list.getOr(3, () -> -1));
+        assertThrows(IndexOutOfBoundsException.class, () -> list.getOrGet(-1, () -> -1));
+        assertEquals(-1, list.getOrGet(3, () -> -1));
     }
 
     @Test
@@ -203,21 +203,21 @@ class ListTest {
     @Test
     void testOfSingleElement() {
         List<Integer> list = List.of(6);
-        assertTrue(list.isNonEmpty());
+        assertTrue(list.nonEmpty());
         assertArrayEquals(new Integer[]{6}, list.asJava().toArray());
     }
 
     @Test
     void testOfElements() {
         List<Integer> list = List.of(1, 2, 3);
-        assertTrue(list.isNonEmpty());
+        assertTrue(list.nonEmpty());
         assertArrayEquals(new Integer[]{1, 2, 3}, list.asJava().toArray());
     }
 
     @Test
     void testOfAll() {
         List<Integer> list = List.ofAll(Arrays.asList(1, 2, 3));
-        assertTrue(list.isNonEmpty());
+        assertTrue(list.nonEmpty());
         assertArrayEquals(new Integer[]{1, 2, 3}, list.asJava().toArray());
     }
 

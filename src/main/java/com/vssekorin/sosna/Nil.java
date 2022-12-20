@@ -5,7 +5,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class Nil<T> implements List<T> {
+public final class Nil<T> extends List<T> {
 
     private static final Nil<?> INSTANCE = new Nil<>();
 
@@ -48,17 +48,12 @@ public final class Nil<T> implements List<T> {
     }
 
     @Override
-    public T getOrNull(int n) {
-        return null;
-    }
-
-    @Override
     public T getOr(int n, T defaultValue) {
         return defaultValue;
     }
 
     @Override
-    public T getOr(int n, Supplier<T> defaultValue) {
+    public T getOrGet(int n, Supplier<T> defaultValue) {
         return defaultValue.get();
     }
 
@@ -76,7 +71,7 @@ public final class Nil<T> implements List<T> {
     }
 
     @Override
-    public <U> U match(Supplier<? extends U> ifNil, BiFunction<T, List<T>, ? extends U> ifCons) {
+    public <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons) {
         return ifNil.get();
     }
 
@@ -84,7 +79,7 @@ public final class Nil<T> implements List<T> {
     public <U> U match(
         Supplier<? extends U> ifNil,
         Function<T, ? extends U> ifSingle,
-        Function<T, Function<T, Function<List<T>, ? extends U>>> ifMultiple
+        Function<T, Function<T, Function<Seq<T>, ? extends U>>> ifMultiple
     ) {
         return ifNil.get();
     }
