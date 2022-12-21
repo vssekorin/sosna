@@ -1,5 +1,6 @@
 package com.vssekorin.sosna;
 
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -22,6 +23,11 @@ public final class Cons<T> extends List<T> {
     @Override
     public T head() {
         return head;
+    }
+
+    @Override
+    public Optional<T> headOpt() {
+        return Optional.of(head);
     }
 
     @Override
@@ -51,6 +57,21 @@ public final class Cons<T> extends List<T> {
             }
         }
         return cur.head();
+    }
+
+    @Override
+    public Optional<T> getOpt(int n) {
+        if (n < 0) {
+            throw new IndexOutOfBoundsException("get(): n is negative");
+        }
+        List<T> cur = this;
+        for (int i = 0; i < n; i++) {
+            cur = cur.tail();
+            if (cur.isNil()) {
+                return Optional.empty();
+            }
+        }
+        return Optional.ofNullable(cur.head());
     }
 
     @Override
@@ -91,6 +112,20 @@ public final class Cons<T> extends List<T> {
     @Override
     public List<T> or(Supplier<? extends Iterable<? extends T>> supplier) {
         return this;
+    }
+
+    @Override
+    public T last() {
+        List<T> cur = this;
+        while (cur.tail().nonEmpty()) {
+            cur = cur.tail();
+        }
+        return cur.head();
+    }
+
+    @Override
+    public Optional<T> lastOpt() {
+        return Optional.of(last());
     }
 
     @Override

@@ -4,11 +4,13 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
 import static com.vssekorin.sosna.ListTestUtil.assertListEquals;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ListTest {
 
@@ -60,6 +62,14 @@ class ListTest {
     void testHead() {
         assertEquals(1, new Cons<>(1, nil()).head());
         assertEquals(1, new Cons<>(1, new Cons<>(2, nil())).head());
+        assertThrowsExactly(NoSuchElementException.class, () -> nil().head());
+    }
+
+    @Test
+    void testHeadOpt() {
+        assertEquals(Optional.of(1), new Cons<>(1, nil()).headOpt());
+        assertEquals(Optional.of(1), new Cons<>(1, new Cons<>(2, nil())).headOpt());
+        assertEquals(Optional.empty(), nil().headOpt());
     }
 
     @Test
@@ -95,6 +105,20 @@ class ListTest {
     }
 
     @Test
+    void testContainsAllTrueIfAllElementExists() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertTrue(list.containsAll(List.of(1, 3, 2)));
+        assertTrue(list.containsAll(List.of(3, 2)));
+        assertTrue(list.containsAll(List.empty()));
+    }
+
+    @Test
+    void testContainsAllFalseIfSomeElementNotExists() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertFalse(list.containsAll(List.of(1, 3, 4, 2)));
+    }
+
+    @Test
     void testGetFirst() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
         assertEquals(1, list.get(0));
@@ -110,6 +134,30 @@ class ListTest {
     void testGetPenultimate() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
         assertEquals(4, list.get(3));
+    }
+
+    @Test
+    void testGetOptFirst() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(Optional.of(1), list.getOpt(0));
+    }
+
+    @Test
+    void testGetOptLast() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(Optional.of(5), list.getOpt(4));
+    }
+
+    @Test
+    void testGetOptPenultimate() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(Optional.of(4), list.getOpt(3));
+    }
+
+    @Test
+    void testGetOptIfWrongIndex() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(Optional.empty(), list.getOpt(10));
     }
 
     @Test
@@ -239,6 +287,17 @@ class ListTest {
     }
 
     @Test
+    void testLastOptCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertEquals(Optional.of(3), list.lastOpt());
+    }
+
+    @Test
+    void testLastOptNil() {
+        assertEquals(Optional.empty(), nil().lastOpt());
+    }
+
+    @Test
     void testInsertCons() {
         List<Integer> list = List.of(1, 2, 3).insert(2, 6);
         assertArrayEquals(new Integer[]{1, 2, 6, 3}, list.asJava().toArray());
@@ -346,6 +405,12 @@ class ListTest {
     void testMap() {
         List<Integer> list = List.of(1, 2, 3);
         assertArrayEquals(new Integer[]{11, 12, 13}, list.map(v -> v + 10).asJava().toArray());
+    }
+
+    @Test
+    void testMapIndexed() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(List.of(11, 13, 15), list.mapIndexed((i, v) -> v + 10 + i));
     }
 
     @Test

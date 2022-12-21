@@ -1,6 +1,7 @@
 package com.vssekorin.sosna;
 
 import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -28,6 +29,11 @@ public final class Nil<T> extends List<T> {
     }
 
     @Override
+    public Optional<T> headOpt() {
+        return Optional.empty();
+    }
+
+    @Override
     public List<T> tail() {
         throw new UnsupportedOperationException("tail() of empty list");
     }
@@ -43,8 +49,18 @@ public final class Nil<T> extends List<T> {
     }
 
     @Override
+    public Optional<T> lastOpt() {
+        return Optional.empty();
+    }
+
+    @Override
     public T get(int n) {
         throw new IllegalArgumentException("get() of empty list");
+    }
+
+    @Override
+    public Optional<T> getOpt(int n) {
+        return Optional.empty();
     }
 
     @Override

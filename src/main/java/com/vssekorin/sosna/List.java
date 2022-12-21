@@ -6,11 +6,8 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
-public sealed abstract class List<T>
-    implements Seq<T>
-    permits Nil, Cons {
+public sealed abstract class List<T> implements Seq<T> permits Nil, Cons {
 
     static <T> List<T> nil() {
         return Nil.instance();
@@ -122,15 +119,6 @@ public sealed abstract class List<T>
     }
 
     @Override
-    public T last() {
-        List<T> cur = this;
-        while (cur.tail().nonEmpty()) {
-            cur = cur.tail();
-        }
-        return cur.head();
-    }
-
-    @Override
     public List<T> insert(int pos, T value) {
         List<T> result;
         List<T> prefix = nil();
@@ -175,6 +163,17 @@ public sealed abstract class List<T>
         return result;
     }
 
+    @Override
+    public <U> List<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper) {
+        List<U> result = nil();
+        int i = 0;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
+            result = new Cons<>(mapper.apply(i, cur.head()), result);
+        }
+        return result.reverse();
+    }
+
+    @Override
     public List<T> plus(final List<T> other) {
         List<T> result = other;
         for (List<T> cur = reverse(); cur.nonEmpty(); cur = cur.tail()) {

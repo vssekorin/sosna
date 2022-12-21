@@ -1,6 +1,7 @@
 package com.vssekorin.sosna;
 
 import java.io.Serializable;
+import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -19,6 +20,8 @@ public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>,
     int size();
 
     T head();
+
+    Optional<T> headOpt();
 
     Seq<T> tail();
 
@@ -39,7 +42,18 @@ public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>,
         return true;
     }
 
+    default boolean containsAny(Seq<T> seq) {
+        for (T value : seq) {
+            if (contains(value)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     T get(int n);
+
+    Optional<T> getOpt(int n);
 
     default T getOrNull(int n) {
         return getOr(n, null);
@@ -71,11 +85,15 @@ public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>,
 
     T last();
 
+    Optional<T> lastOpt();
+
     Seq<T> insert(int pos, T value);
 
     Seq<T> with(int pos, T value);
 
     <U> List<U> map(Function<T, ? extends U> mapper);
+
+    <U> List<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper);
 
     <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons);
 
