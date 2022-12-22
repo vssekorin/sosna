@@ -2,9 +2,7 @@ package com.vssekorin.sosna;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
@@ -116,6 +114,20 @@ class ListTest {
     void testContainsAllFalseIfSomeElementNotExists() {
         List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
         assertFalse(list.containsAll(List.of(1, 3, 4, 2)));
+    }
+
+    @Test
+    void testContainsAnyTrueIfSomeElementExists() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertTrue(list.containsAny(List.of(1, 3, 2)));
+        assertTrue(list.containsAny(List.of(4, 6, 3, 7)));
+    }
+
+    @Test
+    void testContainsAnyFalseIfAllElementsNotExist() {
+        List<Integer> list = new Cons<>(1, new Cons<>(2, new Cons<>(3, nil())));
+        assertFalse(list.containsAny(List.of(4, 5, 6)));
+        assertFalse(list.containsAny(List.empty()));
     }
 
     @Test
@@ -410,7 +422,7 @@ class ListTest {
     @Test
     void testMapIndexed() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(List.of(11, 13, 15), list.mapIndexed((i, v) -> v + 10 + i));
+        assertListEquals(List.of(11, 13, 15), list.mapIndexed((v, i) -> v + 10 + i));
     }
 
     @Test
@@ -506,5 +518,73 @@ class ListTest {
     void testPrependCons() {
         List<Integer> list = List.of(1, 2, 3);
         assertListEquals(List.of(6, 1, 2, 3), list.prepend(6));
+    }
+
+    @Test
+    void testTakeNil() {
+        assertListEquals(nil(), nil().take(3));
+    }
+
+    @Test
+    void testTakeConsCorrect() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(List.of(1, 2, 3), list.take(3));
+    }
+
+    @Test
+    void testTakeConsMore() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(list, list.take(10));
+    }
+
+    @Test
+    void testTakeWhileNil() {
+        assertListEquals(nil(), List.<Integer>nil().takeWhile(v -> v <= 3));
+    }
+
+    @Test
+    void testTakeWhileConsCorrect() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(List.of(1, 2, 3), list.takeWhile(v -> v <= 3));
+    }
+
+    @Test
+    void testTakeWhileConsMore() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(list, list.takeWhile(v -> v <= 30));
+    }
+
+    @Test
+    void testTakeRightNil() {
+        assertListEquals(nil(), nil().takeRight(3));
+    }
+
+    @Test
+    void testTakeRightConsCorrect() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(List.of(3, 4, 5), list.takeRight(3));
+    }
+
+    @Test
+    void testTakeRightConsMore() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(list, list.takeRight(10));
+    }
+
+    @Test
+    void testTakeRightWhileNil() {
+        assertListEquals(nil(), List.<Integer>nil().takeRightWhile(v -> v >= 3));
+    }
+
+    @Test
+    void testTakeRightWhileConsCorrect() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(List.of(3, 4, 5), list.takeRightWhile(v -> v >= 3));
+    }
+
+    @Test
+    void testTakeRightWhileConsMore() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertListEquals(list, list.takeRightWhile(v -> v <= 10));
     }
 }

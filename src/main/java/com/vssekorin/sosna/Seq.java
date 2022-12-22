@@ -2,22 +2,17 @@ package com.vssekorin.sosna;
 
 import java.io.Serializable;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.Function;
-import java.util.function.IntFunction;
-import java.util.function.Supplier;
+import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>, IntFunction<T> {
+public interface Seq<T> extends Functor<T>, Iterable<T>, Function<Integer, T>, IntFunction<T>, Serializable {
 
     boolean isEmpty();
 
     default boolean nonEmpty() {
         return !isEmpty();
     }
-
-    int size();
 
     T head();
 
@@ -28,8 +23,6 @@ public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>,
     java.util.List<T> asJava();
 
     Seq<T> prepend(T value);
-
-    Seq<T> append(T value);
 
     boolean contains(T value);
 
@@ -81,19 +74,11 @@ public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>,
 
     Seq<T> or(Supplier<? extends Iterable<? extends T>> supplier);
 
-    Seq<T> reverse();
-
-    T last();
-
-    Optional<T> lastOpt();
-
     Seq<T> insert(int pos, T value);
 
     Seq<T> with(int pos, T value);
 
-    <U> List<U> map(Function<T, ? extends U> mapper);
-
-    <U> List<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper);
+    <U> Seq<U> mapIndexed(BiFunction<T, Integer, ? extends U> mapper);
 
     <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons);
 
@@ -103,5 +88,7 @@ public interface Seq<T> extends Serializable, Iterable<T>, Function<Integer, T>,
         Function<T, Function<T, Function<Seq<T>, ? extends U>>> ifMultiple
     );
 
-    Seq<T> plus(final List<T> other);
+    Seq<T> take(int n);
+
+    Seq<T> takeWhile(Predicate<T> cond);
 }

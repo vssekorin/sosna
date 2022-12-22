@@ -6,8 +6,9 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
-public sealed abstract class List<T> implements Seq<T> permits Nil, Cons {
+public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
 
     static <T> List<T> nil() {
         return Nil.instance();
@@ -164,13 +165,61 @@ public sealed abstract class List<T> implements Seq<T> permits Nil, Cons {
     }
 
     @Override
-    public <U> List<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper) {
+    public <U> List<U> mapIndexed(BiFunction<T, Integer, ? extends U> mapper) {
         List<U> result = nil();
         int i = 0;
         for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
-            result = new Cons<>(mapper.apply(i, cur.head()), result);
+            result = new Cons<>(mapper.apply(cur.head(), i), result);
         }
         return result.reverse();
+    }
+
+    @Override
+    public List<T> take(int n) {
+        List<T> result = nil();
+        int i = 0;
+        for (List<T> cur = this; i < n && cur.nonEmpty(); i++, cur = cur.tail()) {
+            result = new Cons<>(cur.head(), result);
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public List<T> takeWhile(Predicate<T> cond) {
+        List<T> result = nil();
+        for (List<T> cur = this; cur.nonEmpty() && cond.test(cur.head()); cur = cur.tail()) {
+            result = new Cons<>(cur.head(), result);
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public List<T> takeRight(int n) {
+        List<T> result = this;
+        List<T> cur = this;
+        for (int i = 0; i < n && cur.nonEmpty(); i++) {
+            cur = cur.tail();
+        }
+        while (cur.nonEmpty()) {
+            result = result.tail();
+            cur = cur.tail();
+        }
+        return result;
+    }
+
+    @Override
+    public List<T> takeRightWhile(Predicate<T> cond) {
+        List<T> start = nil();
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            if (cond.test(cur.head())) {
+                if (start.isNil()) {
+                    start = cur;
+                }
+            } else {
+                start = nil();
+            }
+        }
+        return start;
     }
 
     @Override
