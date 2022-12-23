@@ -233,4 +233,27 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
         }
         return start;
     }
+
+    @Override
+    public boolean equals(Object that) {
+        if (this == that) return true;
+        if (that == null || getClass() != that.getClass()) return false;
+        List<?> list = (List<?>) that;
+        List<T> cur = this;
+        for (; cur.nonEmpty() && list.nonEmpty(); cur = cur.tail(), list = list.tail()) {
+            if (!Objects.equals(cur.head(), list.head())) {
+                return false;
+            }
+        }
+        return cur.isNil() && list.isNil();
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            hashCode += 31 * hashCode + (cur.head() == null ? 0 : Objects.hashCode(cur.head()));
+        }
+        return hashCode;
+    }
 }

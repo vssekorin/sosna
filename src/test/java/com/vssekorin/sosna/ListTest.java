@@ -6,7 +6,6 @@ import java.util.*;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
-import static com.vssekorin.sosna.ListTestUtil.assertListEquals;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -422,7 +421,7 @@ class ListTest {
     @Test
     void testMapIndexed() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(List.of(11, 13, 15), list.mapIndexed((v, i) -> v + 10 + i));
+        assertEquals(List.of(11, 13, 15), list.mapIndexed((v, i) -> v + 10 + i));
     }
 
     @Test
@@ -471,140 +470,154 @@ class ListTest {
     @Test
     void testAppendNil() {
         List<Integer> list = List.nil();
-        assertListEquals(List.of(6), list.append(6));
+        assertEquals(List.of(6), list.append(6));
     }
 
     @Test
     void testAppendCons() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(List.of(1, 2, 3, 6), list.append(6));
+        assertEquals(List.of(1, 2, 3, 6), list.append(6));
     }
 
     @Test
     void testAppendAllNilNil() {
-        assertListEquals(nil(), nil().appendAll(nil()));
+        assertEquals(nil(), nil().appendAll(nil()));
     }
 
     @Test
     void testAppendAllConsNil() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(list, list.appendAll(nil()));
+        assertEquals(list, list.appendAll(nil()));
     }
 
     @Test
     void testAppendAllNilCons() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(list, List.<Integer>nil().appendAll(list));
+        assertEquals(list, List.<Integer>nil().appendAll(list));
     }
 
     @Test
     void testAppendAllConsCons() {
         List<Integer> first = List.of(1, 2, 3);
         List<Integer> second = List.of(4, 5, 6);
-        assertListEquals(List.of(1, 2, 3, 4, 5, 6), first.appendAll(second));
+        assertEquals(List.of(1, 2, 3, 4, 5, 6), first.appendAll(second));
     }
 
     @Test
     void testPrependNil() {
         List<Integer> list = List.nil();
-        assertListEquals(List.of(6), list.prepend(6));
+        assertEquals(List.of(6), list.prepend(6));
     }
 
     @Test
     void testPrependCons() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(List.of(6, 1, 2, 3), list.prepend(6));
+        assertEquals(List.of(6, 1, 2, 3), list.prepend(6));
     }
 
     @Test
     void testPrependAllNilNil() {
-        assertListEquals(nil(), nil().prependAll(nil()));
+        assertEquals(nil(), nil().prependAll(nil()));
     }
 
     @Test
     void testPrependAllConsNil() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(list, list.prependAll(nil()));
+        assertEquals(list, list.prependAll(nil()));
     }
 
     @Test
     void testPrependAllNilCons() {
         List<Integer> list = List.of(1, 2, 3);
-        assertListEquals(list, List.<Integer>nil().prependAll(list));
+        assertEquals(list, List.<Integer>nil().prependAll(list));
     }
 
     @Test
     void testPrependAllConsCons() {
         List<Integer> first = List.of(1, 2, 3);
         List<Integer> second = List.of(4, 5, 6);
-        assertListEquals(List.of(4, 5, 6, 1, 2, 3), first.prependAll(second));
+        assertEquals(List.of(4, 5, 6, 1, 2, 3), first.prependAll(second));
     }
 
     @Test
     void testTakeNil() {
-        assertListEquals(nil(), nil().take(3));
+        assertEquals(nil(), nil().take(3));
     }
 
     @Test
     void testTakeConsCorrect() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(List.of(1, 2, 3), list.take(3));
+        assertEquals(List.of(1, 2, 3), list.take(3));
     }
 
     @Test
     void testTakeConsMore() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(list, list.take(10));
+        assertEquals(list, list.take(10));
     }
 
     @Test
     void testTakeWhileNil() {
-        assertListEquals(nil(), List.<Integer>nil().takeWhile(v -> v <= 3));
+        assertEquals(nil(), List.<Integer>nil().takeWhile(v -> v <= 3));
     }
 
     @Test
     void testTakeWhileConsCorrect() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(List.of(1, 2, 3), list.takeWhile(v -> v <= 3));
+        assertEquals(List.of(1, 2, 3), list.takeWhile(v -> v <= 3));
     }
 
     @Test
     void testTakeWhileConsMore() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(list, list.takeWhile(v -> v <= 30));
+        assertEquals(list, list.takeWhile(v -> v <= 30));
     }
 
     @Test
     void testTakeRightNil() {
-        assertListEquals(nil(), nil().takeRight(3));
+        assertEquals(nil(), nil().takeRight(3));
     }
 
     @Test
     void testTakeRightConsCorrect() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(List.of(3, 4, 5), list.takeRight(3));
+        assertEquals(List.of(3, 4, 5), list.takeRight(3));
     }
 
     @Test
     void testTakeRightConsMore() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(list, list.takeRight(10));
+        assertEquals(list, list.takeRight(10));
     }
 
     @Test
     void testTakeRightWhileNil() {
-        assertListEquals(nil(), List.<Integer>nil().takeRightWhile(v -> v >= 3));
+        assertEquals(nil(), List.<Integer>nil().takeRightWhile(v -> v >= 3));
     }
 
     @Test
     void testTakeRightWhileConsCorrect() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(List.of(3, 4, 5), list.takeRightWhile(v -> v >= 3));
+        assertEquals(List.of(3, 4, 5), list.takeRightWhile(v -> v >= 3));
     }
 
     @Test
     void testTakeRightWhileConsMore() {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
-        assertListEquals(list, list.takeRightWhile(v -> v <= 10));
+        assertEquals(list, list.takeRightWhile(v -> v <= 10));
+    }
+
+    @Test
+    void testEqualTrue() {
+        assertEquals(List.of(1, 2, 3), List.of(1, 2, 3));
+        assertEquals(nil(), nil());
+    }
+
+    @Test
+    void testEqualFalse() {
+        assertNotEquals(List.of(1, 2, 3), List.of(1, 2, 3, 4));
+        assertNotEquals(List.of(1, 2, 3), List.of(1, 4, 3));
+        assertNotEquals(List.of(1, 2, 3), nil());
+        assertNotEquals(nil(), List.of(1, 2, 3));
     }
 }
