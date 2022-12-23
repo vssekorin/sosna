@@ -24,6 +24,8 @@ public interface Seq<T> extends Functor<T>, Iterable<T>, Function<Integer, T>, I
 
     Seq<T> prepend(T value);
 
+    Seq<T> prependAll(Iterable<? extends T> values);
+
     boolean contains(T value);
 
     default boolean containsAll(Seq<T> seq) {

@@ -9,13 +9,13 @@ public interface FiniteSeq<T> extends Seq<T> {
 
     FiniteSeq<T> append(T value);
 
+    FiniteSeq<T> appendAll(Iterable<? extends T> values);
+
     FiniteSeq<T> reverse();
 
     T last();
 
     Optional<T> lastOpt();
-
-    FiniteSeq<T> plus(final List<T> other);
 
     FiniteSeq<T> takeRight(int n);
 

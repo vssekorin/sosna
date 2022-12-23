@@ -44,6 +44,11 @@ public final class Nil<T> extends List<T> {
     }
 
     @Override
+    public List<T> appendAll(Iterable<? extends T> values) {
+        return List.ofAll(values);
+    }
+
+    @Override
     public T last() {
         throw new NoSuchElementException("last() of empty list");
     }

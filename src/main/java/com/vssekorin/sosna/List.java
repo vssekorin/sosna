@@ -48,7 +48,19 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
     }
 
     @Override
+    public List<T> prependAll(Iterable<? extends T> values) {
+        List<T> result = this;
+        for (T value : List.ofAll(values).reverse()) {
+            result = result.prepend(value);
+        }
+        return result;
+    }
+
+    @Override
     public abstract List<T> append(T value);
+
+    @Override
+    public abstract List<T> appendAll(Iterable<? extends T> values);
 
     @Override
     public boolean contains(T value) {
@@ -220,14 +232,5 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
             }
         }
         return start;
-    }
-
-    @Override
-    public List<T> plus(final List<T> other) {
-        List<T> result = other;
-        for (List<T> cur = reverse(); cur.nonEmpty(); cur = cur.tail()) {
-            result = new Cons<>(cur.head(), result);
-        }
-        return result;
     }
 }

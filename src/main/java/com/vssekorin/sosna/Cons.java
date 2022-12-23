@@ -45,6 +45,11 @@ public final class Cons<T> extends List<T> {
     }
 
     @Override
+    public List<T> appendAll(Iterable<? extends T> values) {
+        return List.<T>ofAll(values).prependAll(this);
+    }
+
+    @Override
     public T get(int n) {
         if (n < 0) {
             throw new IndexOutOfBoundsException("get(): n is negative");

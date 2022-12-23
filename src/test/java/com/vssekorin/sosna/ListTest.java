@@ -438,34 +438,6 @@ class ListTest {
     }
 
     @Test
-    void testConsPlusCons() {
-        List<Integer> list = List.of(1, 2, 3);
-        List<Integer> other = List.of(4, 5, 6);
-        assertListEquals(List.of(1, 2, 3, 4, 5, 6), list.plus(other));
-    }
-
-    @Test
-    void testNilPlusCons() {
-        List<Integer> list = List.nil();
-        List<Integer> other = List.of(4, 5, 6);
-        assertListEquals(List.of(4, 5, 6), list.plus(other));
-    }
-
-    @Test
-    void testConsPlusNil() {
-        List<Integer> list = List.of(1, 2, 3);
-        List<Integer> other = List.nil();
-        assertListEquals(List.of(1, 2, 3), list.plus(other));
-    }
-
-    @Test
-    void testNilPlusNil() {
-        List<Integer> list = List.nil();
-        List<Integer> other = List.nil();
-        assertListEquals(List.nil(), list.plus(other));
-    }
-
-    @Test
     void testMatch2Nil() {
         List<Integer> list = nil();
         String result = list.match(() -> "1", h -> "2", h1 -> h2 -> xs -> "3");
@@ -509,6 +481,30 @@ class ListTest {
     }
 
     @Test
+    void testAppendAllNilNil() {
+        assertListEquals(nil(), nil().appendAll(nil()));
+    }
+
+    @Test
+    void testAppendAllConsNil() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(list, list.appendAll(nil()));
+    }
+
+    @Test
+    void testAppendAllNilCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(list, List.<Integer>nil().appendAll(list));
+    }
+
+    @Test
+    void testAppendAllConsCons() {
+        List<Integer> first = List.of(1, 2, 3);
+        List<Integer> second = List.of(4, 5, 6);
+        assertListEquals(List.of(1, 2, 3, 4, 5, 6), first.appendAll(second));
+    }
+
+    @Test
     void testPrependNil() {
         List<Integer> list = List.nil();
         assertListEquals(List.of(6), list.prepend(6));
@@ -518,6 +514,30 @@ class ListTest {
     void testPrependCons() {
         List<Integer> list = List.of(1, 2, 3);
         assertListEquals(List.of(6, 1, 2, 3), list.prepend(6));
+    }
+
+    @Test
+    void testPrependAllNilNil() {
+        assertListEquals(nil(), nil().prependAll(nil()));
+    }
+
+    @Test
+    void testPrependAllConsNil() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(list, list.prependAll(nil()));
+    }
+
+    @Test
+    void testPrependAllNilCons() {
+        List<Integer> list = List.of(1, 2, 3);
+        assertListEquals(list, List.<Integer>nil().prependAll(list));
+    }
+
+    @Test
+    void testPrependAllConsCons() {
+        List<Integer> first = List.of(1, 2, 3);
+        List<Integer> second = List.of(4, 5, 6);
+        assertListEquals(List.of(4, 5, 6, 1, 2, 3), first.prependAll(second));
     }
 
     @Test
