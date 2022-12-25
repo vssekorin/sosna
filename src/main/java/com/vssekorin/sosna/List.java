@@ -177,11 +177,11 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
     }
 
     @Override
-    public <U> List<U> mapIndexed(BiFunction<T, Integer, ? extends U> mapper) {
+    public <U> List<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper) {
         List<U> result = nil();
         int i = 0;
         for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
-            result = new Cons<>(mapper.apply(cur.head(), i), result);
+            result = new Cons<>(mapper.apply(i, cur.head()), result);
         }
         return result.reverse();
     }
@@ -232,6 +232,20 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
             }
         }
         return start;
+    }
+
+    @Override
+    public <U> U foldLeft(U zero, BiFunction<? super U, ? super T, ? extends U> func) {
+        U result = zero;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            result = func.apply(result, cur.head());
+        }
+        return result;
+    }
+
+    @Override
+    public <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> func) {
+        return reverse().foldLeft(zero, (acc, v) -> func.apply(v, acc));
     }
 
     @Override
