@@ -5,15 +5,19 @@ import java.util.function.Function;
 
 public interface Foldable<T> {
 
-    <U> U foldLeft(U zero, BiFunction<? super U, ? super T, ? extends U> func);
+    default T fold(Monoid<T> monoid) {
+        return foldLeft(monoid.empty(), monoid::combine);
+    }
 
     default <U> U foldLeft(U zero, Function<? super U, Function<? super T, ? extends U>> func) {
         return foldLeft(zero, (a, b) -> func.apply(a).apply(b));
     }
 
-    <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> func);
+    <U> U foldLeft(U zero, BiFunction<? super U, ? super T, ? extends U> func);
 
     default <U> U foldRight(U zero, Function<? super T, Function<? super U, ? extends U>> func) {
         return foldRight(zero, (a, b) -> func.apply(a).apply(b));
     }
+
+    <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> func);
 }
