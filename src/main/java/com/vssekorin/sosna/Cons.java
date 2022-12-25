@@ -150,4 +150,18 @@ public final class Cons<T> extends List<T> {
             return ifMultiple.apply(head).apply(tail.head()).apply(tail.tail());
         }
     }
+
+    @Override
+    public T reduceLeft(BiFunction<? super T, ? super T, ? extends T> func) {
+        T result = head;
+        for (List<T> cur = tail; cur.nonEmpty(); cur = cur.tail()) {
+            result = func.apply(result, cur.head());
+        }
+        return result;
+    }
+
+    @Override
+    public T reduceRight(BiFunction<? super T, ? super T, ? extends T> func) {
+        return this.reverse().reduceLeft((acc, v) -> func.apply(v, acc));
+    }
 }

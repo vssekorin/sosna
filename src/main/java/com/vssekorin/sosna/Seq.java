@@ -6,7 +6,8 @@ import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-public interface Seq<T> extends Functor<T>, Iterable<T>, Function<Integer, T>, IntFunction<T>, Serializable {
+public interface Seq<T>
+    extends Traversable<T>, Reducible<T>, Function<Integer, T>, IntFunction<T>, Serializable {
 
     boolean isEmpty();
 
@@ -80,7 +81,7 @@ public interface Seq<T> extends Functor<T>, Iterable<T>, Function<Integer, T>, I
 
     Seq<T> with(int pos, T value);
 
-    <U> Seq<U> mapIndexed(BiFunction<T, Integer, ? extends U> mapper);
+    <U> Seq<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper);
 
     <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons);
 

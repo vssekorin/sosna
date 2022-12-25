@@ -2,12 +2,13 @@ package com.vssekorin.sosna;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class ListTest {
 
@@ -421,7 +422,7 @@ class ListTest {
     @Test
     void testMapIndexed() {
         List<Integer> list = List.of(1, 2, 3);
-        assertEquals(List.of(11, 13, 15), list.mapIndexed((v, i) -> v + 10 + i));
+        assertEquals(List.of(11, 13, 15), list.mapIndexed((i, v) -> v + 10 + i));
     }
 
     @Test
@@ -619,5 +620,67 @@ class ListTest {
         assertNotEquals(List.of(1, 2, 3), List.of(1, 4, 3));
         assertNotEquals(List.of(1, 2, 3), nil());
         assertNotEquals(nil(), List.of(1, 2, 3));
+    }
+
+    @Test
+    void testFoldLeft() {
+        assertEquals(16, List.of(1, 2, 3).foldLeft(10, Integer::sum));
+    }
+
+    @Test
+    void testFoldRight() {
+        assertEquals(16, List.of(1, 2, 3).foldRight(10, Integer::sum));
+    }
+
+    @Test
+    void testFoldLeftCurry() {
+        assertEquals(16, List.of(1, 2, 3).foldLeft(10, acc -> v -> acc + v));
+    }
+
+    @Test
+    void testFoldRightCurry() {
+        assertEquals(16, List.of(1, 2, 3).foldRight(10, v -> acc -> acc + v));
+    }
+
+    @Test
+    void testReduceLeft() {
+        assertEquals(10, List.of(1, 2, 3, 4).reduceLeft(Integer::sum));
+    }
+
+    @Test
+    void testReduceLeftNil() {
+        assertThrowsExactly(NoSuchElementException.class, () -> List.<Integer>nil().reduceLeft(Integer::sum));
+    }
+
+    @Test
+    void testReduceRight() {
+        assertEquals(10, List.of(1, 2, 3, 4).reduceRight(Integer::sum));
+    }
+
+    @Test
+    void testReduceRightNil() {
+        assertThrowsExactly(NoSuchElementException.class, () -> List.<Integer>nil().reduceRight(Integer::sum));
+    }
+
+    @Test
+    void testReduceLeftCurry() {
+        assertEquals(10, List.of(1, 2, 3, 4).reduceLeft(acc -> v -> acc + v));
+    }
+
+    @Test
+    void testReduceLeftNilCurry() {
+        List<Integer> list = List.nil();
+        assertThrowsExactly(NoSuchElementException.class, () -> list.reduceLeft(acc -> v -> acc + v));
+    }
+
+    @Test
+    void testReduceRightCurry() {
+        assertEquals(10, List.of(1, 2, 3, 4).reduceRight(v -> acc -> acc + v));
+    }
+
+    @Test
+    void testReduceRightNilCurry() {
+        List<Integer> list = List.nil();
+        assertThrowsExactly(NoSuchElementException.class, () -> list.reduceRight(v -> acc -> acc + v));
     }
 }

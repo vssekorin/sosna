@@ -60,7 +60,7 @@ public final class Nil<T> extends List<T> {
 
     @Override
     public T get(int n) {
-        throw new IllegalArgumentException("get() of empty list");
+        throw new NoSuchElementException("get() of empty list");
     }
 
     @Override
@@ -103,5 +103,15 @@ public final class Nil<T> extends List<T> {
         Function<T, Function<T, Function<Seq<T>, ? extends U>>> ifMultiple
     ) {
         return ifNil.get();
+    }
+
+    @Override
+    public T reduceLeft(BiFunction<? super T, ? super T, ? extends T> func) {
+        throw new NoSuchElementException("reduceLeft of empty list");
+    }
+
+    @Override
+    public T reduceRight(BiFunction<? super T, ? super T, ? extends T> func) {
+        throw new NoSuchElementException("reduceRight of empty list");
     }
 }
