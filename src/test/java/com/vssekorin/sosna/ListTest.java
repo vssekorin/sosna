@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
+import static com.vssekorin.sosna.Monoids.IntSum;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ListTest {
@@ -682,5 +683,15 @@ class ListTest {
     void testReduceRightNilCurry() {
         List<Integer> list = List.nil();
         assertThrowsExactly(NoSuchElementException.class, () -> list.reduceRight(v -> acc -> acc + v));
+    }
+
+    @Test
+    void testFold() {
+        assertEquals(10, List.of(1, 2, 3, 4).fold(IntSum));
+    }
+
+    @Test
+    void testReduce() {
+        assertEquals(10, List.of(1, 2, 3, 4).reduce(Integer::sum));
     }
 }
