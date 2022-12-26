@@ -81,7 +81,18 @@ public interface Seq<T>
 
     Seq<T> with(int pos, T value);
 
+    @Override
+    <U> Seq<U> map(Function<T, ? extends U> mapper);
+
     <U> Seq<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper);
+
+    Seq<T> filter(Predicate<? super T> predicate);
+
+    Seq<T> filterNot(Predicate<? super T> predicate);
+
+    Seq<T> filterNonNull();
+
+    Seq<T> filterIndexed(BiPredicate<Integer, T> predicate);
 
     <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons);
 

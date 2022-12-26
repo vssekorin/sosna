@@ -694,4 +694,46 @@ class ListTest {
     void testReduce() {
         assertEquals(10, List.of(1, 2, 3, 4).reduce(Integer::sum));
     }
+
+    @Test
+    void testFilterFirstAndLastAreGood() {
+        List<Integer> list = List.of(2, 2, 2, 3, 4, 5, 6);
+        assertEquals(List.of(2, 2, 2, 4, 6), list.filter(v -> v % 2 == 0));
+    }
+
+    @Test
+    void testFilterFirstIsGood() {
+        List<Integer> list = List.of(2, 3, 4, 5, 6, 7, 9);
+        assertEquals(List.of(2, 4, 6), list.filter(v -> v % 2 == 0));
+    }
+
+    @Test
+    void testFilterLastIsGood() {
+        List<Integer> list = List.of(1, 3, 4, 5, 6, 8);
+        assertEquals(List.of(4, 6, 8), list.filter(v -> v % 2 == 0));
+    }
+
+    @Test
+    void testFilterFirstAndLastAreBad() {
+        List<Integer> list = List.of(1, 3, 4, 5, 6, 8, 7, 9);
+        assertEquals(List.of(4, 6, 8), list.filter(v -> v % 2 == 0));
+    }
+
+    @Test
+    void testFilterIndexed() {
+        List<Integer> list = List.of(2, 2, 2, 3, 4, 4, 5, 6, 7);
+        assertEquals(List.of(2, 2, 4), list.filterIndexed((i, v) -> v % 2 == 0 && i % 2 == 0));
+    }
+
+    @Test
+    void testFilterNot() {
+        List<Integer> list = List.of(1, 3, 4, 5, 6, 8);
+        assertEquals(List.of(1, 3, 5), list.filterNot(v -> v % 2 == 0));
+    }
+
+    @Test
+    void testFilterNonNull() {
+        List<Integer> list = List.of(1, null, null, 2, 3, null, 4);
+        assertEquals(List.of(1, 2, 3, 4), list.filterNonNull());
+    }
 }

@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -184,6 +185,45 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
             result = new Cons<>(mapper.apply(i, cur.head()), result);
         }
         return result.reverse();
+    }
+
+    @Override
+    public List<T> filter(Predicate<? super T> predicate) {
+        return filterIndexed((__, v) -> predicate.test(v));
+    }
+
+    @Override
+    public List<T> filterNot(Predicate<? super T> predicate) {
+        return filter(predicate.negate());
+    }
+
+    @Override
+    public Seq<T> filterNonNull() {
+        return filter(Objects::nonNull);
+    }
+
+    @Override
+    public List<T> filterIndexed(BiPredicate<Integer, T> predicate) {
+        List<T> result = this;
+        List<T> left = nil();
+        int i = 0;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
+            if (!predicate.test(i, cur.head())) {
+                while (result != cur) {
+                    left = left.prepend(result.head());
+                    result = result.tail();
+                }
+                result = result.tail();
+            }
+        }
+        if (result == this) {
+            return this;
+        } else {
+            for (List<T> cur = left; cur.nonEmpty(); cur = cur.tail()) {
+                result = new Cons<>(cur.head(), result);
+            }
+            return result;
+        }
     }
 
     @Override
