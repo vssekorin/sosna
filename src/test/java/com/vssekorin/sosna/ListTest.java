@@ -52,7 +52,7 @@ class ListTest {
     }
 
     @Test
-    void testConssize() {
+    void testConsSize() {
         assertEquals(1, new Cons<>(1, nil()).size());
         assertEquals(2, new Cons<>(1, new Cons<>(2, nil())).size());
     }
@@ -735,5 +735,41 @@ class ListTest {
     void testFilterNonNull() {
         List<Integer> list = List.of(1, null, null, 2, 3, null, 4);
         assertEquals(List.of(1, 2, 3, 4), list.filterNonNull());
+    }
+
+    @Test
+    void testAllTrue() {
+        List<Integer> list = List.of(5, 6, 7, 8, 9);
+        assertTrue(list.all(v -> v > 2));
+    }
+
+    @Test
+    void testAllFalse() {
+        List<Integer> list = List.of(5, 6, 7, 8, 9);
+        assertFalse(list.all(v -> v < 7));
+    }
+
+    @Test
+    void testAnyTrue() {
+        List<Integer> list = List.of(5, 6, 7, 8, 9);
+        assertTrue(list.any(v -> v == 7));
+    }
+
+    @Test
+    void testAnyFalse() {
+        List<Integer> list = List.of(5, 6, 7, 8, 9);
+        assertFalse(list.any(v -> v < 5));
+    }
+
+    @Test
+    void testCount() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
+        assertEquals(5, list.count(v -> v % 2 == 0));
+    }
+
+    @Test
+    void testCountZero() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
+        assertEquals(0, list.count(v -> v < 0));
     }
 }

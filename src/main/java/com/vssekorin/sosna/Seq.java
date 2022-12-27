@@ -94,6 +94,12 @@ public interface Seq<T>
 
     Seq<T> filterIndexed(BiPredicate<Integer, T> predicate);
 
+    boolean all(Predicate<T> predicate);
+
+    boolean any(Predicate<T> predicate);
+
+    int count(Predicate<T> predicate);
+
     <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons);
 
     <U> U match(
