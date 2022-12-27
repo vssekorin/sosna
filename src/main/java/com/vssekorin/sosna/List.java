@@ -227,6 +227,37 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
     }
 
     @Override
+    public boolean all(Predicate<T> predicate) {
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            if (!predicate.test(cur.head())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean any(Predicate<T> predicate) {
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            if (predicate.test(cur.head())) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public int count(Predicate<T> predicate) {
+        int count = 0;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            if (predicate.test(cur.head())) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    @Override
     public List<T> take(int n) {
         List<T> result = nil();
         int i = 0;
