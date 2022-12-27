@@ -1,6 +1,7 @@
 package com.vssekorin.sosna;
 
 import java.io.Serializable;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -21,13 +22,29 @@ public interface Seq<T>
 
     Seq<T> tail();
 
+    int size();
+
     java.util.List<T> asJava();
 
     Seq<T> prepend(T value);
 
     Seq<T> prependAll(Iterable<? extends T> values);
 
-    boolean contains(T value);
+    Seq<T> append(T value);
+
+    Seq<T> appendAll(Iterable<? extends T> values);
+
+    Seq<T> reverse();
+
+    T last();
+
+    Optional<T> lastOpt();
+
+    boolean contains(Eq<T> equiv, T value);
+
+    default boolean contains(T value) {
+        return contains(Objects::equals, value);
+    }
 
     default boolean containsAll(Seq<T> seq) {
         for (T value : seq) {
@@ -100,6 +117,14 @@ public interface Seq<T>
 
     int count(Predicate<T> predicate);
 
+    default int count(Eq<T> equiv, T value) {
+        return count(v -> equiv.eq(v, value));
+    }
+
+    default int count(T value) {
+        return count(v -> v == value);
+    }
+
     <U> U match(Supplier<? extends U> ifNil, BiFunction<T, Seq<T>, ? extends U> ifCons);
 
     <U> U match(
@@ -111,4 +136,8 @@ public interface Seq<T>
     Seq<T> take(int n);
 
     Seq<T> takeWhile(Predicate<T> cond);
+
+    Seq<T> takeRight(int n);
+
+    Seq<T> takeRightWhile(Predicate<T> cond);
 }
