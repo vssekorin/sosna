@@ -772,4 +772,16 @@ class ListTest {
         List<Integer> list = List.of(1, 2, 3, 4, 5, 6, 7, 8, 9, 0);
         assertEquals(0, list.count(v -> v < 0));
     }
+
+    @Test
+    void testCountValue() {
+        List<Integer> list = List.of(1, 2, 3, 1, 4, 5, 1, 6, 6, 1);
+        assertEquals(4, list.count(1));
+    }
+
+    @Test
+    void testCountEq() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        assertEquals(3, list.count((x, y) -> (x - y) % 2 == 0, 1));
+    }
 }

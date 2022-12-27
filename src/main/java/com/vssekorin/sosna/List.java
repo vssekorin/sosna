@@ -9,7 +9,7 @@ import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
+public sealed abstract class List<T> implements Seq<T> permits Nil, Cons {
 
     static <T> List<T> nil() {
         return Nil.instance();
@@ -64,9 +64,9 @@ public sealed abstract class List<T> implements FiniteSeq<T> permits Nil, Cons {
     public abstract List<T> appendAll(Iterable<? extends T> values);
 
     @Override
-    public boolean contains(T value) {
+    public boolean contains(Eq<T> equiv, T value) {
         for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
-            if (Objects.equals(cur.head(), value)) {
+            if (equiv.eq(cur.head(), value)) {
                 return true;
             }
         }
