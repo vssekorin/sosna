@@ -784,4 +784,43 @@ class ListTest {
         List<Integer> list = List.of(1, 2, 3, 4, 5);
         assertEquals(3, list.count((x, y) -> (x - y) % 2 == 0, 1));
     }
+
+    @Test
+    void testZipWithIndex() {
+        List<String> list = List.of("a", "b", "c");
+        List<Tuple2<String, Integer>> expected = List.of(
+            Tuple.of("a", 0), Tuple.of("b", 1), Tuple.of("c", 2)
+        );
+        assertEquals(expected, list.zipWithIndex());
+    }
+
+    @Test
+    void testZipSameSize() {
+        List<Integer> first = List.of(2, 4, 6);
+        List<String> second = List.of("a", "bc", "def");
+        List<Tuple2<Integer, String>> expected = List.of(
+            Tuple.of(2, "a"), Tuple.of(4, "bc"), Tuple.of(6, "def")
+        );
+        assertEquals(expected, first.zip(second));
+    }
+
+    @Test
+    void testZipFirstLonger() {
+        List<Integer> first = List.of(2, 4, 6, 8, 10);
+        List<String> second = List.of("a", "bc", "def");
+        List<Tuple2<Integer, String>> expected = List.of(
+            Tuple.of(2, "a"), Tuple.of(4, "bc"), Tuple.of(6, "def")
+        );
+        assertEquals(expected, first.zip(second));
+    }
+
+    @Test
+    void testZipSameSecondLonger() {
+        List<Integer> first = List.of(2, 4, 6);
+        List<String> second = List.of("a", "bc", "def", "z", "x", "y");
+        List<Tuple2<Integer, String>> expected = List.of(
+            Tuple.of(2, "a"), Tuple.of(4, "bc"), Tuple.of(6, "def")
+        );
+        assertEquals(expected, first.zip(second));
+    }
 }

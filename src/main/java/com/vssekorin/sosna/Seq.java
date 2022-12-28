@@ -140,4 +140,8 @@ public interface Seq<T>
     Seq<T> takeRight(int n);
 
     Seq<T> takeRightWhile(Predicate<T> cond);
+
+    <U> Seq<Tuple2<T, U>> zip(Iterable<? extends U> that);
+
+    Seq<Tuple2<T, Integer>> zipWithIndex();
 }
