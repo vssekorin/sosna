@@ -320,6 +320,26 @@ public sealed abstract class List<T> implements Seq<T> permits Nil, Cons {
     }
 
     @Override
+    public <U> List<Tuple2<T, U>> zip(Iterable<? extends U> that) {
+        List<Tuple2<T, U>> result = nil();
+        Iterator<? extends U> iterator = that.iterator();
+        for (List<T> cur = this; cur.nonEmpty() && iterator.hasNext(); cur = cur.tail()) {
+            result = new Cons<>(new Tuple2<>(cur.head(), iterator.next()), result);
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public List<Tuple2<T, Integer>> zipWithIndex() {
+        List<Tuple2<T, Integer>> result = nil();
+        int i = 0;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
+            result = new Cons<>(new Tuple2<>(cur.head(), i), result);
+        }
+        return result.reverse();
+    }
+
+    @Override
     public boolean equals(Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
