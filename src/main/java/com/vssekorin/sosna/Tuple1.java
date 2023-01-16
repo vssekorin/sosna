@@ -4,8 +4,9 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
-public record Tuple1<A>(A _1) implements Tuple, Functor<A> {
+public record Tuple1<A>(A _1) implements Tuple, Functor<A>, Supplier<A> {
 
     @Override
     public int size() {
@@ -34,6 +35,11 @@ public record Tuple1<A>(A _1) implements Tuple, Functor<A> {
 
     public Optional<A> toOpt() {
         return Optional.ofNullable(_1);
+    }
+
+    @Override
+    public A get() {
+        return _1;
     }
 
     public Tuple1<A> with1(A value) {
