@@ -25,6 +25,12 @@ public sealed interface Tuple extends Serializable, Iterable<Object>
         return toList().iterator();
     }
 
+    default void orRun(Runnable runnable) {
+        if (size() == 0) {
+            runnable.run();
+        }
+    }
+
     static Tuple0 empty() {
         return Tuple0.instance();
     }
