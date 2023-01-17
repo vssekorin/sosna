@@ -4,6 +4,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -270,5 +271,59 @@ class EitherTest {
         Either<String, Tuple2<Integer, String>> result = either.zip("abc");
         assertTrue(result.isLeft());
         assertSame(either, result);
+    }
+
+    @Test
+    void testRunRight() {
+        Either<String, Integer> either = Either.right(6);
+        AtomicInteger i = new AtomicInteger(10);
+        either.run(i::addAndGet);
+        assertEquals(16, i.get());
+        assertEquals(6, either.right());
+    }
+
+    @Test
+    void testRunLeft() {
+        Either<String, Integer> either = Either.left("6");
+        AtomicInteger i = new AtomicInteger(10);
+        either.run(i::addAndGet);
+        assertEquals(10, i.get());
+        assertEquals("6", either.left());
+    }
+
+    @Test
+    void testOrRunRight() {
+        Either<String, Integer> either = Either.right(6);
+        AtomicInteger i = new AtomicInteger(10);
+        either.orRun(l -> i.addAndGet(10));
+        assertEquals(10, i.get());
+        assertEquals(6, either.right());
+    }
+
+    @Test
+    void testOrRunLeft() {
+        Either<String, Integer> either = Either.left("6");
+        AtomicInteger i = new AtomicInteger(10);
+        either.orRun(l -> i.addAndGet(10));
+        assertEquals(20, i.get());
+        assertEquals("6", either.left());
+    }
+
+    @Test
+    void testOrRunLeftWithValue() {
+        Either<String, Integer> either = Either.left("6");
+        AtomicInteger i = new AtomicInteger(10);
+        either.orRun(l -> i.addAndGet(Integer.parseInt(l)));
+        assertEquals(16, i.get());
+        assertEquals("6", either.left());
+    }
+
+    @Test
+    void testOrRunRunnable() {
+        Either<String, Integer> either = Either.left("6");
+        AtomicInteger i = new AtomicInteger(10);
+        either.orRun(() -> i.addAndGet(10));
+        assertEquals(20, i.get());
+        assertEquals("6", either.left());
     }
 }

@@ -90,6 +90,12 @@ public interface Seq<T>
         return StreamSupport.stream(spliterator(), false);
     }
 
+    default void orRun(Runnable runnable) {
+        if (isEmpty()) {
+            runnable.run();
+        }
+    }
+
     Seq<T> or(Iterable<? extends T> other);
 
     Seq<T> or(Supplier<? extends Iterable<? extends T>> supplier);

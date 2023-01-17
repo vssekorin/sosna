@@ -86,6 +86,18 @@ public abstract class Either<L, R> implements Functor<R>, Bifunctor<L, R>, Suppl
         }
     }
 
+    public void orRun(Consumer<? super L> consumer) {
+        if (isLeft()) {
+            consumer.accept(left());
+        }
+    }
+
+    public void orRun(Runnable runnable) {
+        if (isLeft()) {
+            runnable.run();
+        }
+    }
+
     public abstract Either<R, L> swap();
 
     public abstract <U> Either<U, R> mapLeft(Function<L, ? extends U> mapper);
