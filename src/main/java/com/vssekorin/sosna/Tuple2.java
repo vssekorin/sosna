@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-public record Tuple2<A, B>(A _1, B _2) implements Tuple, Bifunctor<A, B> {
+public record Tuple2<A, B>(A _1, B _2) implements Tuple, Bifunctor<A, B>, Map.Entry<A, B>, Ext<Tuple2<A, B>> {
 
     @Override
     public int size() {
@@ -72,6 +72,21 @@ public record Tuple2<A, B>(A _1, B _2) implements Tuple, Bifunctor<A, B> {
     @Override
     public <U, V> Tuple2<U, V> bimap(Function<A, ? extends U> f, Function<B, ? extends V> g) {
         return new Tuple2<>(f.apply(_1), g.apply(_2));
+    }
+
+    @Override
+    public A getKey() {
+        return _1;
+    }
+
+    @Override
+    public B getValue() {
+        return _2;
+    }
+
+    @Override
+    public B setValue(B value) {
+        throw new UnsupportedOperationException();
     }
 
     @Override
