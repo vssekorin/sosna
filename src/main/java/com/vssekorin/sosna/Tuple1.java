@@ -6,7 +6,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public record Tuple1<A>(A _1) implements Tuple, Functor<A>, Supplier<A> {
+public record Tuple1<A>(A _1) implements Tuple, Functor<A>, Supplier<A>, Ext<Tuple1<A>> {
 
     @Override
     public int size() {

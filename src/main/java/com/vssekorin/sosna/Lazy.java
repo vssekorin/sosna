@@ -5,7 +5,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public final class Lazy<T> implements Supplier<T>, Functor<T>, Serializable {
+public final class Lazy<T> implements Supplier<T>, Functor<T>, Ext<Lazy<T>>, Serializable {
 
     private transient volatile Supplier<? extends T> supplier;
     private volatile T value;

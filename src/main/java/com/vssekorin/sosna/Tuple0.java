@@ -2,7 +2,7 @@ package com.vssekorin.sosna;
 
 import java.util.Optional;
 
-public final class Tuple0 implements Tuple {
+public final class Tuple0 implements Tuple, Ext<Tuple0> {
 
     private static final Tuple0 INSTANCE = new Tuple0();
 

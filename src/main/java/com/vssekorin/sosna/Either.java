@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-public abstract class Either<L, R> implements Functor<R>, Bifunctor<L, R>, Supplier<R> {
+public abstract class Either<L, R> implements Functor<R>, Bifunctor<L, R>, Ext<Either<L, R>>, Supplier<R> {
 
     private Either() {
     }
@@ -79,12 +79,6 @@ public abstract class Either<L, R> implements Functor<R>, Bifunctor<L, R>, Suppl
     public abstract Optional<R> toOpt();
 
     public abstract List<R> toList();
-
-    public void run(Consumer<? super R> consumer) {
-        if (isRight()) {
-            consumer.accept(right());
-        }
-    }
 
     public void orRun(Consumer<? super L> consumer) {
         if (isLeft()) {

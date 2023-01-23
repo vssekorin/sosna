@@ -8,7 +8,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
-import static com.vssekorin.sosna.Monoids.IntSum;
+import static com.vssekorin.sosna.Monoid.Int.sum;
 import static org.junit.jupiter.api.Assertions.*;
 
 class ListTest {
@@ -687,7 +687,7 @@ class ListTest {
 
     @Test
     void testFold() {
-        assertEquals(10, List.of(1, 2, 3, 4).fold(IntSum));
+        assertEquals(10, List.of(1, 2, 3, 4).fold(sum));
     }
 
     @Test

@@ -277,7 +277,7 @@ class EitherTest {
     void testRunRight() {
         Either<String, Integer> either = Either.right(6);
         AtomicInteger i = new AtomicInteger(10);
-        either.run(i::addAndGet);
+        either.run(e -> i.addAndGet(e.right()));
         assertEquals(16, i.get());
         assertEquals(6, either.right());
     }
@@ -286,8 +286,8 @@ class EitherTest {
     void testRunLeft() {
         Either<String, Integer> either = Either.left("6");
         AtomicInteger i = new AtomicInteger(10);
-        either.run(i::addAndGet);
-        assertEquals(10, i.get());
+        either.run(e -> i.addAndGet(10));
+        assertEquals(20, i.get());
         assertEquals("6", either.left());
     }
 
