@@ -2,6 +2,7 @@ package com.vssekorin.sosna;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -71,5 +72,13 @@ class ExtTest {
         Tuple2<Obj, Integer> pair = obj.to(10);
         assertSame(obj, pair._1());
         assertEquals(10, pair._2());
+    }
+
+    @Test
+    void some() {
+        Obj obj = new Obj();
+        Optional<Obj> result = obj.some();
+        assertTrue(result.isPresent());
+        assertEquals(obj, result.get());
     }
 }

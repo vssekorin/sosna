@@ -19,13 +19,13 @@ public record Tuple2<A, B>(A _1, B _2) implements Tuple, Bifunctor<A, B>, Map.En
     }
 
     @Override
-    public <T> Tuple prepend(T value) {
-        throw new UnsupportedOperationException();
+    public <T> Tuple3<T, A, B> prepend(T value) {
+        return new Tuple3<>(value, _1, _2);
     }
 
     @Override
-    public <T> Tuple append(T value) {
-        throw new UnsupportedOperationException();
+    public <T> Tuple3<A, B, T> append(T value) {
+        return new Tuple3<>(_1, _2, value);
     }
 
     @Override
