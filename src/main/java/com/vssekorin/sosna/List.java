@@ -70,29 +70,6 @@ public sealed abstract class List<T> implements Seq<T>, Ext<List<T>> permits Nil
         return false;
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        final List<T> that = this;
-        return new Iterator<>() {
-            private List<T> list = that;
-
-            @Override
-            public boolean hasNext() {
-                return !list.isEmpty();
-            }
-
-            @Override
-            public T next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
-                final T result = list.head();
-                list = list.tail();
-                return result;
-            }
-        };
-    }
-
     static <T> List<T> empty() {
         return List.nil();
     }

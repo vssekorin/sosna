@@ -1,6 +1,8 @@
 package com.vssekorin.sosna;
 
 import java.io.Serializable;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
@@ -39,6 +41,29 @@ public interface Seq<T>
     T last();
 
     Optional<T> lastOpt();
+
+    @Override
+    default Iterator<T> iterator() {
+        final Seq<T> that = this;
+        return new Iterator<>() {
+            private Seq<T> seq = that;
+
+            @Override
+            public boolean hasNext() {
+                return !seq.isEmpty();
+            }
+
+            @Override
+            public T next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                final T result = seq.head();
+                seq = seq.tail();
+                return result;
+            }
+        };
+    }
 
     boolean contains(Eq<T> equiv, T value);
 
