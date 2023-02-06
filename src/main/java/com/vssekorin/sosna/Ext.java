@@ -62,4 +62,14 @@ public interface Ext<T> {
     default Optional<T> some() {
         return Optional.of((T) this);
     }
+
+    @SuppressWarnings("unchecked")
+    default <L> Either<L, T> asRight() {
+        return Either.right((T) this);
+    }
+
+    @SuppressWarnings("unchecked")
+    default <R> Either<T, R> asLeft() {
+        return Either.left((T) this);
+    }
 }
