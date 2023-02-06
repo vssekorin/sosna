@@ -26,6 +26,8 @@ public interface Seq<T>
 
     int size();
 
+    Tuple2<T, ? extends Seq<T>> uncons();
+
     java.util.List<T> asJava();
 
     Seq<T> prepend(T value);
@@ -133,6 +135,20 @@ public interface Seq<T>
     <U> Seq<U> map(Function<T, ? extends U> mapper);
 
     <U> Seq<U> mapIndexed(BiFunction<Integer, T, ? extends U> mapper);
+
+    Seq<T> mapIf(Predicate<? super T> condition, Function<? super T, ? extends T> f);
+
+    <U> Seq<U> mapIf(
+        Predicate<? super T> condition,
+        Function<? super T, ? extends U> thenF,
+        Function<? super T, ? extends U> elseF
+    );
+
+    Seq<T> mapIfFirst(Predicate<? super T> condition, Function<? super T, ? extends T> f);
+
+    <U> Seq<U> mapNotNull(Function<T, ? extends U> f);
+
+    <U> Seq<U> mapIndexedNotNull(BiFunction<Integer, T, ? extends U> f);
 
     Seq<T> filter(Predicate<? super T> predicate);
 

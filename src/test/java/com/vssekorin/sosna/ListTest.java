@@ -5,6 +5,8 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static com.vssekorin.sosna.List.nil;
@@ -822,5 +824,78 @@ class ListTest {
             Tuple.of(2, "a"), Tuple.of(4, "bc"), Tuple.of(6, "def")
         );
         assertEquals(expected, first.zip(second));
+    }
+
+    @Test
+    void testMapIfOneFunction() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        List<Integer> result = list.mapIf(v -> v % 2 == 0, v -> v + 10);
+        assertEquals(List.of(1, 12, 3, 14, 5), result);
+    }
+
+    @Test
+    void testMapIfTwoFunction() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        List<Integer> result = list.mapIf(v -> v % 2 == 0, v -> v + 10, v -> v - 10);
+        assertEquals(List.of(-9, 12, -7, 14, -5), result);
+    }
+
+    @Test
+    void testMapIfFirst() {
+        List<Integer> list = List.of(1, 2, 3, 4, 5);
+        List<Integer> result = list.mapIfFirst(v -> v % 2 == 0, v -> v + 10);
+        assertEquals(List.of(1, 12, 3, 4, 5), result);
+    }
+
+    @Test
+    void testUncons() {
+        List<Integer> list = List.of(1, 2, 3);
+        Tuple2<Integer, List<Integer>> result = list.uncons();
+        assertEquals(1, result._1());
+        assertEquals(List.of(2, 3), result._2());
+    }
+
+    @Test
+    void testReplicatePositive() {
+        List<Integer> result = List.replicate(3, 6);
+        assertEquals(List.of(6, 6, 6), result);
+    }
+
+    @Test
+    void testReplicateZero() {
+        List<Integer> result = List.replicate(0, 6);
+        assertEquals(List.empty(), result);
+    }
+
+    @Test
+    void testReplicateNegative() {
+        List<Integer> result = List.replicate(-3, 6);
+        assertEquals(List.empty(), result);
+    }
+
+    @Test
+    void testMapNotNull() {
+        List<String> list = List.of("12a", "45", "", "3");
+        Function<String, Integer> toIntOrNull = s -> {
+            try {
+                return Integer.valueOf(s);
+            } catch (NumberFormatException exc) {
+                return null;
+            }
+        };
+        assertEquals(List.of(45, 3), list.mapNotNull(toIntOrNull));
+    }
+
+    @Test
+    void testMapIndexedNotNull() {
+        List<String> list = List.of("12a", "45", "", "3");
+        BiFunction<Integer, String, Integer> toIntOrNull = (index, s) -> {
+            try {
+                return Integer.parseInt(s) + index * 1000;
+            } catch (NumberFormatException exc) {
+                return null;
+            }
+        };
+        assertEquals(List.of(1045, 3003), list.mapIndexedNotNull(toIntOrNull));
     }
 }

@@ -36,6 +36,11 @@ public final class Cons<T> extends List<T> {
     }
 
     @Override
+    public Tuple2<T, List<T>> uncons() {
+        return Tuple.of(head, tail);
+    }
+
+    @Override
     public List<T> append(T value) {
         List<T> list = new Cons<>(value, List.nil());
         for (List<T> cur = reverse(); cur.nonEmpty(); cur = cur.tail()) {

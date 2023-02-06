@@ -39,6 +39,11 @@ public final class Nil<T> extends List<T> {
     }
 
     @Override
+    public Tuple2<T, List<T>> uncons() {
+        throw new UnsupportedOperationException("uncons() of empty list");
+    }
+
+    @Override
     public List<T> append(T value) {
         return new Cons<>(value, this);
     }

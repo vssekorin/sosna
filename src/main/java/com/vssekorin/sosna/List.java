@@ -1,6 +1,8 @@
 package com.vssekorin.sosna;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
@@ -30,6 +32,9 @@ public sealed abstract class List<T> implements Seq<T>, Ext<List<T>> permits Nil
 
     @Override
     public abstract List<T> tail();
+
+    @Override
+    public abstract Tuple2<T, List<T>> uncons();
 
     @Override
     public java.util.List<T> asJava() {
@@ -95,6 +100,14 @@ public sealed abstract class List<T> implements Seq<T>, Ext<List<T>> permits Nil
         return result.reverse();
     }
 
+    static <T> List<T> replicate(int n, T value) {
+        List<T> result = nil();
+        for (int i = 0; i < n; i++) {
+            result = new Cons<>(value, result);
+        }
+        return result;
+    }
+
     @Override
     public List<T> reverse() {
         List<T> origin = this;
@@ -145,10 +158,10 @@ public sealed abstract class List<T> implements Seq<T>, Ext<List<T>> permits Nil
     @Override
     public <U> List<U> map(Function<T, ? extends U> mapper) {
         List<U> result = nil();
-        for (List<T> cur = reverse(); cur.nonEmpty(); cur = cur.tail()) {
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
             result = new Cons<>(mapper.apply(cur.head()), result);
         }
-        return result;
+        return result.reverse();
     }
 
     @Override
@@ -157,6 +170,69 @@ public sealed abstract class List<T> implements Seq<T>, Ext<List<T>> permits Nil
         int i = 0;
         for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
             result = new Cons<>(mapper.apply(i, cur.head()), result);
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public List<T> mapIf(Predicate<? super T> condition, Function<? super T, ? extends T> f) {
+        List<T> result = nil();
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            final T value = condition.test(cur.head()) ? f.apply(cur.head()) : cur.head();
+            result = new Cons<>(value, result);
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public <U> List<U> mapIf(
+        Predicate<? super T> condition,
+        Function<? super T, ? extends U> thenF,
+        Function<? super T, ? extends U> elseF
+    ) {
+        List<U> result = nil();
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            final U value = condition.test(cur.head()) ? thenF.apply(cur.head()) : elseF.apply(cur.head());
+            result = new Cons<>(value, result);
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public List<T> mapIfFirst(Predicate<? super T> condition, Function<? super T, ? extends T> f) {
+        boolean should = true;
+        List<T> result = nil();
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            if (should && condition.test(cur.head())) {
+                result = new Cons<>(f.apply(cur.head()), result);
+                should = false;
+            } else {
+                result = new Cons<>(cur.head(), result);
+            }
+        }
+        return result.reverse();
+    }
+
+    public <U> List<U> mapNotNull(Function<T, ? extends U> f) {
+        List<U> result = nil();
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail()) {
+            U value = f.apply(cur.head());
+            if (value != null) {
+                result = new Cons<>(value, result);
+            }
+        }
+        return result.reverse();
+    }
+
+    @Override
+    public <U> List<U> mapIndexedNotNull(BiFunction<Integer, T, ? extends U> f) {
+        List<U> result = nil();
+        int i = 0;
+        for (List<T> cur = this; cur.nonEmpty(); cur = cur.tail(), i++) {
+            U value = f.apply(i, cur.head());
+            if (value != null) {
+                result = new Cons<>(value, result);
+            }
         }
         return result.reverse();
     }
@@ -172,7 +248,7 @@ public sealed abstract class List<T> implements Seq<T>, Ext<List<T>> permits Nil
     }
 
     @Override
-    public Seq<T> filterNonNull() {
+    public List<T> filterNonNull() {
         return filter(Objects::nonNull);
     }
 
